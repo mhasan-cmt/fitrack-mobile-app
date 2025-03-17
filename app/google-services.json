@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "465317629771",
+    "project_id": "fitrack-bubt-cse",
+    "storage_bucket": "fitrack-bubt-cse.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465317629771:android:a55550dc09dd656a8d62ce",
+        "android_client_info": {
+          "package_name": "bd.edu.bubt.cse.fitrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPgzsOtQPj6ER029GOnqmXA_nlAj2prG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

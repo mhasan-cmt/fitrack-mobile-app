@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Fitrack</string>
+    <string name="already_have_an_account_login">Already have an account? Login</string>
+    <string name="register">Register</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="fitrack">Fitrack</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
+    <string name="todo">TODO</string>
+    <string name="Name">Name\n</string>
+    <string name="phone">Phone</string>
+    <string name="logout">Logout</string>
+    <string name="settings">Settings</string>
+    <string name="profile">Profile</string>
+    <string name="icon">icon</string>
+    <string name="user_name">User Name</string>
+    <string name="user_example_com">user@example.com</string>
+    <string name="icon_for_the_app">Icon for the app</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="default_web_client_id">465317629771-q1ntdbueh9kr463c4ul7rgubg6m9si7p.apps.googleusercontent.com</string>
+</resources>

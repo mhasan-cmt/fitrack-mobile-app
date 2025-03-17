@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary Colors -->
+    <color name="primaryColor">#3F51B5</color> <!-- Soft Blue -->
+    <color name="secondaryColor">#009688</color> <!-- Teal -->
+
+    <!-- Accent Colors -->
+    <color name="accentColor">#FF6F61</color> <!-- Coral -->
+
+    <!-- Background Colors -->
+    <color name="lightGray">#F5F5F5</color> <!-- Light Gray -->
+
+    <!-- Text Colors -->
+    <color name="darkGray">#212121</color> <!-- Dark Gray -->
+    <color name="darkText">#212121</color> <!-- Dark Text -->
+    <color name="lightText">#FFFFFFFF</color> <!-- Light Text -->
+</resources>
