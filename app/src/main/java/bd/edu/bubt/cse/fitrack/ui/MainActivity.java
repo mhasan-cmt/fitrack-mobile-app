@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth mAuth;
     private DrawerLayout drawerLayout;
     private TextView tvUserEmail;
+    private TextView tvBalance;
+    private TextView tvExpense;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isOnboardingDone = sharedPreferences.getBoolean("isOnboardingDone", false);
 
-        if (!isOnboardingDone){
+        if (!isOnboardingDone) {
             startActivity(new Intent(MainActivity.this, Onboarding.class));
             finish();
             return;
@@ -55,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         findViews();
+
+        if (savedInstanceState == null) {
+            loadFragment(new DashboardFragment());
+        }
 
         String userEmail = currentUser.getEmail();
         tvUserEmail.setText(userEmail);
@@ -73,13 +80,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         tvUserEmail = headerView.findViewById(R.id.user_email);
+        tvBalance = binding.tvBalance;
+        tvExpense = binding.tvExpenses;
+
+        // Set user balance and expenses
+        tvBalance.setText("$1200.00");
+        tvExpense.setText("$151.74");
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.nav_logout) {
+        Fragment fragment = null;
+
+        if (item.getItemId() == R.id.nav_dashboard) {
+            fragment = new DashboardFragment();
+        } else if (item.getItemId() == R.id.nav_logout) {
             logoutUser();
         }
+
+        if (fragment != null) {
+            loadFragment(fragment);
+        }
+
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -98,5 +120,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
     }
 }
