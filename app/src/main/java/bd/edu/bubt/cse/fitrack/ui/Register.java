@@ -62,9 +62,9 @@ public class Register extends AppCompatActivity {
             Set<String> roles = Set.of("user");
 
             RegisterRequest request = new RegisterRequest(email, password, username, roles);
-            RetrofitClient.getAuthApi().registerUser(request).enqueue(new Callback<ApiResponseDto>() {
+            RetrofitClient.getAuthApi().registerUser(request).enqueue(new Callback<ApiResponseDto<String>>() {
                 @Override
-                public void onResponse(Call<ApiResponseDto> call, Response<ApiResponseDto> response) {
+                public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                     progressBar.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
 
@@ -75,12 +75,12 @@ public class Register extends AppCompatActivity {
                         startActivity(otpIntent);
                         finish();
                     } else {
-                        displayToast(response.body() != null ? response.body().getResponse().toString() : "Registration failed");
+                        displayToast(response.body() != null ? response.body().getResponse() : "Registration failed");
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ApiResponseDto> call, Throwable t) {
+                public void onFailure(Call<ApiResponseDto<String>> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
                     displayToast("Error: " + t.getMessage());

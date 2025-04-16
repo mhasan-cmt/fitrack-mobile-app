@@ -18,7 +18,7 @@ public interface AuthApi {
 
     @Headers("Content-Type: application/json")
     @POST("auth/signup")
-    Call<ApiResponseDto<?>> registerUser(@Body RegisterRequest request);
+    Call<ApiResponseDto<String>> registerUser(@Body RegisterRequest request);
 
     @Headers("Content-Type: application/json")
     @GET("auth/signup/verify")
