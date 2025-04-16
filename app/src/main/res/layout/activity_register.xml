@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <TextView
             android:id="@+id/tvRegisterTitle"
             android:layout_width="wrap_content"
@@ -29,6 +30,16 @@
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/input_field_background"
+            android:hint="Username"
+            android:inputType="text"
+            android:padding="12dp" />
 
         <EditText
             android:id="@+id/etEmail"

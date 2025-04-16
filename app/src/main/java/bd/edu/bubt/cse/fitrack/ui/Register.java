@@ -2,7 +2,6 @@ package bd.edu.bubt.cse.fitrack.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,9 +10,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import bd.edu.bubt.cse.fitrack.data.api.RetrofitClient;
+import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
+import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseStatus;
+import bd.edu.bubt.cse.fitrack.data.dto.RegisterRequest;
 import bd.edu.bubt.cse.fitrack.databinding.ActivityRegisterBinding;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Register extends AppCompatActivity {
 
@@ -37,36 +44,72 @@ public class Register extends AppCompatActivity {
     }
 
     private void setupRegisterButton() {
+        EditText etUsername = binding.etUsername;
         EditText etEmail = binding.etEmail;
         EditText etPassword = binding.etPassword;
         Button btnRegister = binding.btnRegister;
         ProgressBar progressBar = binding.progressBar;
 
         btnRegister.setOnClickListener(v -> {
-            if (validateFields(etEmail, etPassword)) {
-                btnRegister.setEnabled(false);
-                progressBar.setVisibility(View.VISIBLE);
+            String username = etUsername.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
 
-                String email = etEmail.getText().toString().trim();
-                String password = etPassword.getText().toString().trim();
+            if (!validateFields(etEmail, etPassword, etUsername)) return;
 
-                // Simulate local registration logic
-                // You can replace this later with Retrofit or Room logic
-                new Handler().postDelayed(() -> {
-                    displayToast("Registration successful for " + email);
-                    startActivity(new Intent(Register.this, Login.class));
-                    finish();
-                }, 1500);
+            btnRegister.setEnabled(false);
+            progressBar.setVisibility(View.VISIBLE);
+            Set<String> roles = Set.of("user");
 
-                // NOTE: Replace this with Room insert or API call via Retrofit
-            }
+            RegisterRequest request = new RegisterRequest(email, password, username, roles);
+            RetrofitClient.getAuthApi().registerUser(request).enqueue(new Callback<ApiResponseDto>() {
+                @Override
+                public void onResponse(Call<ApiResponseDto> call, Response<ApiResponseDto> response) {
+                    progressBar.setVisibility(View.GONE);
+                    btnRegister.setEnabled(true);
+
+                    if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals(ApiResponseStatus.SUCCESS)) {
+                        Toast.makeText(Register.this, "OTP sent to email", Toast.LENGTH_SHORT).show();
+                        Intent otpIntent = new Intent(Register.this, VerifyOtpActivity.class);
+                        otpIntent.putExtra("email", email);
+                        startActivity(otpIntent);
+                        finish();
+                    } else {
+                        displayToast(response.body() != null ? response.body().getResponse().toString() : "Registration failed");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ApiResponseDto> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    btnRegister.setEnabled(true);
+                    displayToast("Error: " + t.getMessage());
+                }
+            });
         });
     }
 
-    private boolean validateFields(EditText etEmail, EditText etPassword) {
+
+    private boolean validateFields(EditText etEmail, EditText etPassword, EditText etUsername) {
         boolean isValid = true;
+
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String username = etUsername.getText().toString().trim();
+
+        if (username.isEmpty()) {
+            etUsername.setError("Username is required");
+            isValid = false;
+        } else if (username.length() < 3) {
+            etUsername.setError("Username must be at least 3 characters");
+            isValid = false;
+        } else if (username.length() > 20) {
+            etUsername.setError("Username must be at most 20 characters");
+            isValid = false;
+        } else if (!username.matches("[a-zA-Z0-9]+")) {
+            etUsername.setError("Username can only contain letters and numbers");
+            isValid = false;
+        }
 
         if (email.isEmpty()) {
             etEmail.setError("Email is required");
@@ -79,8 +122,11 @@ public class Register extends AppCompatActivity {
         if (password.isEmpty()) {
             etPassword.setError("Password is required");
             isValid = false;
-        } else if (password.length() < 6) {
-            etPassword.setError("Password must be at least 6 characters");
+        } else if (password.length() < 8) {
+            etPassword.setError("Password must be at least 8 characters");
+            isValid = false;
+        } else if (password.length() > 20) {
+            etPassword.setError("Password must be at most 20 characters");
             isValid = false;
         }
 
