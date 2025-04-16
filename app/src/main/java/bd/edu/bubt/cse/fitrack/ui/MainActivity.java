@@ -17,8 +17,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.databinding.ActivityMainBinding;
@@ -26,7 +24,6 @@ import bd.edu.bubt.cse.fitrack.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActivityMainBinding binding;
-    private FirebaseAuth mAuth;
     private DrawerLayout drawerLayout;
     private TextView tvUserEmail;
     private TextView tvBalance;
@@ -36,9 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isOnboardingDone = sharedPreferences.getBoolean("isOnboardingDone", false);
 
         if (!isOnboardingDone) {
@@ -47,14 +42,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
 
-        if (currentUser == null) {
+        // Securely retrieve JWT token
+        String token = null;
+        token = sharedPreferences.getString("jwt_token", null);
+
+        if (token == null) {
             startActivity(new Intent(MainActivity.this, Login.class));
             finish();
             return;
         }
 
+        // Continue loading main UI
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         findViews();
@@ -63,8 +64,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadFragment(new DashboardFragment());
         }
 
-        String userEmail = currentUser.getEmail();
-        tvUserEmail.setText(userEmail);
+        String username = null;
+        username = sharedPreferences.getString("loggedInUsername", null);
+
+        tvUserEmail.setText(username!=null ? username : "User");
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar,
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvBalance = binding.tvBalance;
         tvExpense = binding.tvExpenses;
 
-        // Set user balance and expenses
+        // Placeholder balance and expense values
         tvBalance.setText("$1200.00");
         tvExpense.setText("$151.74");
     }
@@ -107,11 +110,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void logoutUser() {
-        mAuth.signOut();
+        SharedPreferences.Editor userEditor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+        userEditor.remove("loggedInUsername");
+        userEditor.apply();
+
+        SharedPreferences.Editor authEditor = getSharedPreferences("auth", MODE_PRIVATE).edit();
+        authEditor.remove("jwt_token");
+        authEditor.apply();
+
         Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(MainActivity.this, Login.class));
         finish();
     }
+
 
     @Override
     public void onBackPressed() {
@@ -128,3 +139,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 }
+

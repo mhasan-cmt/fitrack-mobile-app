@@ -13,11 +13,12 @@ import bd.edu.bubt.cse.fitrack.R;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
 import bd.edu.bubt.cse.fitrack.ui.adapter.TransactionAdapter;
-import bd.edu.bubt.cse.fitrack.ui.model.Transaction;
 
 public class DashboardFragment extends Fragment {
 
@@ -39,11 +40,11 @@ public class DashboardFragment extends Fragment {
 
     private void loadDummyTransactions() {
         transactionList = new ArrayList<>();
-        transactionList.add(new Transaction("Groceries", "2025-03-15", -45.99));
-        transactionList.add(new Transaction("Salary", "2025-03-10", 1200.00));
-        transactionList.add(new Transaction("Electric Bill", "2025-03-08", -75.50));
-        transactionList.add(new Transaction("Dining Out", "2025-03-05", -30.25));
-        transactionList.add(new Transaction("Freelance Work", "2025-03-02", 500.00));
+transactionList.add(new Transaction(1L, 101, "Groceries", 0, "Bought groceries", -45.99, LocalDate.of(2025, 3, 15), "user@example.com"));
+transactionList.add(new Transaction(2L, 102, "Income", 1, "Monthly salary", 1200.00, LocalDate.of(2025, 3, 10), "user@example.com"));
+transactionList.add(new Transaction(3L, 103, "Utilities", 0, "Paid electric bill", -75.50, LocalDate.of(2025, 3, 8), "user@example.com"));
+transactionList.add(new Transaction(4L, 104, "Dining", 0, "Dinner at a restaurant", -30.25, LocalDate.of(2025, 3, 5), "user@example.com"));
+transactionList.add(new Transaction(5L, 105, "Freelance", 1, "Freelance project payment", 500.00, LocalDate.of(2025, 3, 2), "user@example.com"));
 
         transactionAdapter = new TransactionAdapter(transactionList);
         rvTransactions.setAdapter(transactionAdapter);

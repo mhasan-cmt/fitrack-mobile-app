@@ -53,12 +53,6 @@
         android:textColor="@android:color/white"
         android:layout_marginTop="16dp"/>
 
-    <!-- Google Sign-In Button -->
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/btnGoogleLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
 
     <TextView
         android:id="@+id/tvRegister"

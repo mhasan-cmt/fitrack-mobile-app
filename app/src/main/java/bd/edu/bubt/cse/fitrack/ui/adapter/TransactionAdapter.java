@@ -1,5 +1,6 @@
 package bd.edu.bubt.cse.fitrack.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import bd.edu.bubt.cse.fitrack.R;
-import bd.edu.bubt.cse.fitrack.ui.model.Transaction;
+import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
@@ -26,11 +27,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Transaction transaction = transactionList.get(position);
-        holder.tvTitle.setText(transaction.getTitle());
-        holder.tvDate.setText(transaction.getDate());
+        holder.tvTitle.setText(transaction.getDescription());
+        holder.tvDate.setText(transaction.getDate().toString());
         holder.tvAmount.setText("$" + transaction.getAmount());
 
         // Change color based on amount
