@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import bd.edu.bubt.cse.fitrack.data.api.RetrofitClient;
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
+import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseStatus;
 import bd.edu.bubt.cse.fitrack.databinding.ActivityVerifyOtpBinding;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,11 +49,16 @@ public class VerifyOtpActivity extends AppCompatActivity {
                 binding.progressBar.setVisibility(View.GONE);
                 binding.btnVerifyOtp.setEnabled(true);
 
-                Toast.makeText(VerifyOtpActivity.this,
-                        response.body() != null ? response.body().getResponse() : "Verification failed",
-                        Toast.LENGTH_SHORT).show();
+                if (response.body() != null && response.body().getStatus() == ApiResponseStatus.SUCCESS) {
+                    Intent intent = new Intent(VerifyOtpActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(VerifyOtpActivity.this,
+                            response.body() != null ? response.body().getResponse() : "Verification failed",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
-
             @Override
             public void onFailure(Call<ApiResponseDto<String>> call, Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);

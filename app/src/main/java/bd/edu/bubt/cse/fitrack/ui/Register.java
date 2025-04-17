@@ -61,7 +61,7 @@ public class Register extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
             Set<String> roles = Set.of("user");
 
-            RegisterRequest request = new RegisterRequest(email, password, username, roles);
+            RegisterRequest request = new RegisterRequest(username, email, password, roles);
             RetrofitClient.getAuthApi().registerUser(request).enqueue(new Callback<ApiResponseDto<String>>() {
                 @Override
                 public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {

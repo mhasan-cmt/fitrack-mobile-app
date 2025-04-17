@@ -114,9 +114,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userEditor.remove("loggedInUsername");
         userEditor.apply();
 
-        SharedPreferences.Editor authEditor = getSharedPreferences("auth", MODE_PRIVATE).edit();
-        authEditor.remove("jwt_token");
-        authEditor.apply();
+        userEditor.remove("jwt_token");
+        userEditor.apply();
+
+        // Verify jwt_token is removed
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        if (sharedPreferences.getString("jwt_token", null) == null) {
+            Toast.makeText(this, "JWT token removed successfully", Toast.LENGTH_SHORT).show();
+        }
 
         Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(MainActivity.this, Login.class));
