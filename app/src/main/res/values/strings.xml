@@ -22,4 +22,5 @@
     <string name="default_web_client_id">465317629771-q1ntdbueh9kr463c4ul7rgubg6m9si7p.apps.googleusercontent.com</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="invalid_credentials">Invalid Credentials</string>
 </resources>

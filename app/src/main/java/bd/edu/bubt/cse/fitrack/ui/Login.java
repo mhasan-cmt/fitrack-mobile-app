@@ -1,5 +1,7 @@
 package bd.edu.bubt.cse.fitrack.ui;
 
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.data.api.RetrofitClient;
 import bd.edu.bubt.cse.fitrack.data.dto.LoginRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.LoginResponse;
@@ -30,6 +33,22 @@ public class Login extends AppCompatActivity {
         setContentView(binding.getRoot());
         binding.btnLogin.setOnClickListener(v -> loginUser());
         binding.tvRegister.setOnClickListener(v -> startActivity(new Intent(Login.this, Register.class)));
+        binding.tvForgotPassword.setOnClickListener(v-> forgotPassword());
+    }
+
+    private void forgotPassword() {
+        String email = binding.etEmail.getText().toString().trim();
+        if (TextUtils.isEmpty(email)) {
+            binding.etEmail.setError("Email is required");
+            return;
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.etEmail.setError("Enter a valid email address");
+            return;
+        }
+
+
     }
 
     private void loginUser() {
@@ -41,12 +60,17 @@ public class Login extends AppCompatActivity {
             return;
         }
 
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.etEmail.setError("Enter a valid email address");
+            return;
+        }
+
         if (TextUtils.isEmpty(password)) {
             binding.etPassword.setError("Password is required");
             return;
         }
 
-        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(VISIBLE);
         binding.btnLogin.setEnabled(false);
 
         LoginRequest loginRequest = new LoginRequest(email, password);
@@ -57,6 +81,10 @@ public class Login extends AppCompatActivity {
                 binding.progressBar.setVisibility(View.GONE);
                 binding.btnLogin.setEnabled(true);
 
+                if (binding.tvError.getVisibility() == VISIBLE) {
+                    binding.tvError.setVisibility(View.GONE);
+                }
+
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
                     saveToken(loginResponse.getToken());
@@ -66,7 +94,8 @@ public class Login extends AppCompatActivity {
                     startActivity(new Intent(Login.this, MainActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(Login.this, "Login failed: Invalid credentials", Toast.LENGTH_LONG).show();
+                    binding.tvError.setVisibility(VISIBLE);
+                    binding.tvError.setText(R.string.invalid_credentials);
                 }
             }
 
@@ -74,7 +103,8 @@ public class Login extends AppCompatActivity {
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);
                 binding.btnLogin.setEnabled(true);
-                Toast.makeText(Login.this, "Login error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                binding.tvError.setVisibility(VISIBLE);
+                binding.tvError.setText(t.getMessage());
             }
         });
     }

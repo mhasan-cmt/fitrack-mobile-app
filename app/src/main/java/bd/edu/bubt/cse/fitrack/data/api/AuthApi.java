@@ -28,4 +28,10 @@ public interface AuthApi {
     @Headers("Content-Type: application/json")
     @GET("auth/signup/verify")
     Call<ApiResponseDto<String>> resend(@Query("email") String email);
+
+    @Headers("Content-Type: application/json")
+    @GET("auth/forgotPassword")
+    Call<ApiResponseDto<String>> resetPassword(@Query("email") String email);
+
+    
 }
