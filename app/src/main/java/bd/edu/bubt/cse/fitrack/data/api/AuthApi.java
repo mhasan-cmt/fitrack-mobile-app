@@ -4,6 +4,7 @@ import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
 import bd.edu.bubt.cse.fitrack.data.dto.LoginRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.LoginResponse;
 import bd.edu.bubt.cse.fitrack.data.dto.RegisterRequest;
+import bd.edu.bubt.cse.fitrack.data.dto.ResetPasswordRequestDto;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -30,8 +31,19 @@ public interface AuthApi {
     Call<ApiResponseDto<String>> resend(@Query("email") String email);
 
     @Headers("Content-Type: application/json")
-    @GET("auth/forgotPassword")
-    Call<ApiResponseDto<String>> resetPassword(@Query("email") String email);
+    @GET("auth/forgotPassword/verifyEmail")
+    Call<ApiResponseDto<String>> sendResetToken(@Query("email") String email);
 
-    
+    @Headers("Content-Type: application/json")
+    @GET("auth/forgotPassword/verifyCode")
+    Call<ApiResponseDto<String>> verifyResetPasswordCode(@Query("code") String code);
+
+    @Headers("Content-Type: application/json")
+    @POST("auth/forgotPassword/resetPassword")
+    Call<ApiResponseDto<String>> resetForgotPassword(@Body ResetPasswordRequestDto request);
+
+    @Headers("Content-Type: application/json")
+    @GET("auth/forgotPassword/resendEmail")
+    Call<ApiResponseDto<String>> resendResetPasswordOTP(@Query("email") String email);
+
 }

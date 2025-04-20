@@ -25,6 +25,8 @@ roomRxjava2 = "2.6.1"
 roomRxjava3 = "2.6.1"
 roomTesting = "2.6.1"
 securityCrypto = "1.1.0-alpha07"
+navigationFragment = "2.6.0"
+navigationUi = "2.6.0"
 
 [libraries]
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
@@ -55,6 +57,8 @@ room-rxjava2 = { module = "androidx.room:room-rxjava2", version.ref = "roomRxjav
 room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "roomRxjava3" }
 room-testing = { module = "androidx.room:room-testing", version.ref = "roomTesting" }
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

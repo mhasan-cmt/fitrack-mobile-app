@@ -37,18 +37,9 @@ public class Login extends AppCompatActivity {
     }
 
     private void forgotPassword() {
-        String email = binding.etEmail.getText().toString().trim();
-        if (TextUtils.isEmpty(email)) {
-            binding.etEmail.setError("Email is required");
-            return;
-        }
-
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.setError("Enter a valid email address");
-            return;
-        }
-
-
+        Intent intent = new Intent(Login.this, ForgotPassword.class);
+        startActivity(intent);
+        finish();
     }
 
     private void loginUser() {

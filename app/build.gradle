@@ -29,10 +29,15 @@ android {
     viewBinding {
         enabled = true
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
 
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
     def room_version = "2.6.1"
 
     implementation libs.appcompat
