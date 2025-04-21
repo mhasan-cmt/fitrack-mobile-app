@@ -1,0 +1,492 @@
+{
+	"info": {
+		"_postman_id": "dfbf132b-4f99-4eaa-8f27-b0122c37dacd",
+		"name": "fitrack_backend",
+		"description": "api for fitrack backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24012674"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "forgot-password",
+					"item": [
+						{
+							"name": "verify-send-otp",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Server}}/mywallet/auth/forgotPassword/verifyEmail?email=21223203103@cse.bubt.edu.bd",
+									"host": [
+										"{{Server}}"
+									],
+									"path": [
+										"mywallet",
+										"auth",
+										"forgotPassword",
+										"verifyEmail"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "21223203103@cse.bubt.edu.bd"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "verify-code",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Server}}/mywallet/auth/forgotPassword/verifyCode?code=8e63a3",
+									"host": [
+										"{{Server}}"
+									],
+									"path": [
+										"mywallet",
+										"auth",
+										"forgotPassword",
+										"verifyCode"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "8e63a3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset-password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"21223203103@cse.bubt.edu.bd\",\r\n  \"newPassword\": \"shafin1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Server}}/mywallet/auth/forgotPassword/resetPassword",
+									"host": [
+										"{{Server}}"
+									],
+									"path": [
+										"mywallet",
+										"auth",
+										"forgotPassword",
+										"resetPassword"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"shafin-cse\",\r\n  \"email\": \"21223203103@cse.bubt.edu.bd\",\r\n  \"password\": \"shafin1234\",\r\n  \"roles\": [\"user\", \"admin\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BackendServer}}/mywallet/auth/signup",
+							"host": [
+								"{{BackendServer}}"
+							],
+							"path": [
+								"mywallet",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "signup_success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"userName\": \"shafin-cse\",\r\n  \"email\": \"21223203103@cse.bubt.edu.bd\",\r\n  \"password\": \"shafin1234\",\r\n  \"roles\": [\"user\", \"admin\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BackendServer}}/mywallet/auth/signup",
+									"host": [
+										"{{BackendServer}}"
+									],
+									"path": [
+										"mywallet",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Apr 2025 17:10:54 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "rndr-id",
+									"value": "da9549bc-fb75-4247"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000 ; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "931d89b2486aa481-DAC"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"SUCCESS\",\n    \"httpStatus\": \"CREATED\",\n    \"response\": \"Verification email has been successfully sent!\"\n}"
+						}
+					]
+				},
+				{
+					"name": "signin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"21223203103@cse.bubt.edu.bd\",\r\n    \"password\": \"shafin1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Server}}/mywallet/auth/signin",
+							"host": [
+								"{{Server}}"
+							],
+							"path": [
+								"mywallet",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BackendServer}}/mywallet/auth/signup/verify?code=221198",
+							"host": [
+								"{{BackendServer}}"
+							],
+							"path": [
+								"mywallet",
+								"auth",
+								"signup",
+								"verify"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "221198"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "verify-failure",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BackendServer}}/mywallet/auth/signup/verify?code=221198",
+									"host": [
+										"{{BackendServer}}"
+									],
+									"path": [
+										"mywallet",
+										"auth",
+										"signup",
+										"verify"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "221198"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Apr 2025 17:05:40 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "rndr-id",
+									"value": "15139126-d5c4-4301"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000 ; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "931d7da1d9d8a481-DAC"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"FAILED\",\n    \"httpStatus\": \"BAD_REQUEST\",\n    \"response\": \"Verification failed: invalid verification code!\"\n}"
+						}
+					]
+				},
+				{
+					"name": "resend",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BackendServer}}/mywallet/auth/signup/resend?email=21223203103@cse.bubt.edu.bd",
+							"host": [
+								"{{BackendServer}}"
+							],
+							"path": [
+								"mywallet",
+								"auth",
+								"signup",
+								"resend"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "21223203103@cse.bubt.edu.bd"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "register, authentication, reset password etc."
+		},
+		{
+			"name": "transaction",
+			"item": []
+		}
+	]
+}
