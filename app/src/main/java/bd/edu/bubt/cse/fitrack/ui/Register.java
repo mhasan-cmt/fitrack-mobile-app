@@ -1,5 +1,7 @@
 package bd.edu.bubt.cse.fitrack.ui;
 
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -68,6 +70,10 @@ public class Register extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
 
+                    if (binding.tvError.getVisibility() == VISIBLE) {
+                        binding.tvError.setVisibility(View.GONE);
+                    }
+
                     if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals(ApiResponseStatus.SUCCESS)) {
                         Toast.makeText(Register.this, "OTP sent to email", Toast.LENGTH_SHORT).show();
                         Intent otpIntent = new Intent(Register.this, VerifyOtpActivity.class);
@@ -75,7 +81,8 @@ public class Register extends AppCompatActivity {
                         startActivity(otpIntent);
                         finish();
                     } else {
-                        displayToast(response.body() != null ? response.body().getResponse() : "Registration failed");
+                        binding.tvError.setVisibility(VISIBLE);
+                        binding.tvError.setText(response.body() != null ? response.body().getResponse() : "Registration failed");
                     }
                 }
 
@@ -83,7 +90,8 @@ public class Register extends AppCompatActivity {
                 public void onFailure(Call<ApiResponseDto<String>> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
-                    displayToast("Error: " + t.getMessage());
+                    binding.tvError.setVisibility(VISIBLE);
+                    binding.tvError.setText(t.getMessage());
                 }
             });
         });
@@ -128,7 +136,20 @@ public class Register extends AppCompatActivity {
         } else if (password.length() > 20) {
             etPassword.setError("Password must be at most 20 characters");
             isValid = false;
+        } else if (!password.matches(".*[A-Z].*")) {
+            etPassword.setError("Password must contain at least one uppercase letter");
+            isValid = false;
+        } else if (!password.matches(".*[a-z].*")) {
+            etPassword.setError("Password must contain at least one lowercase letter");
+            isValid = false;
+        } else if (!password.matches(".*\\d.*")) {
+            etPassword.setError("Password must contain at least one number");
+            isValid = false;
+        } else if (!password.matches(".*[@$!%*?&#^()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/].*")) {
+            etPassword.setError("Password must contain at least one special character");
+            isValid = false;
         }
+
 
         return isValid;
     }

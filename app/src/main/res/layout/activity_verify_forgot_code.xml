@@ -11,7 +11,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Verify Password Reset OTP"
+        android:text="Verify Password"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="32dp" />
@@ -20,7 +20,7 @@
         android:id="@+id/etCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter OTP"
+        android:hint="Enter Verification Code"
         android:inputType="text" />
 
     <Button
@@ -50,6 +50,6 @@
         android:id="@+id/btnResend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Resend OTP"
+        android:text="Resend Code"
         android:layout_marginTop="8dp" />
 </LinearLayout>

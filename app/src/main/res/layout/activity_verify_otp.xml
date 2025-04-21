@@ -2,42 +2,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     android:padding="24dp">
 
     <EditText
         android:id="@+id/etOtp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter OTP"
+        android:background="@drawable/input_field_background"
+        android:hint="Enter Code"
         android:inputType="text"
-        android:padding="12dp"
-        android:background="@drawable/input_field_background" />
+        android:padding="12dp" />
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/errorColor"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:gravity="center"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/btnVerifyOtp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Verify OTP"
         android:layout_marginTop="24dp"
         android:backgroundTint="@color/primaryColor"
+        android:text="Verify Code"
         android:textColor="@android:color/white" />
+
 
     <Button
         android:id="@+id/btnResendOtp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Resend OTP"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@android:color/darker_gray"
-        android:textColor="@android:color/white" />
+        android:layout_marginTop="8dp"
+        android:text="Resend Code" />
 
 </LinearLayout>
