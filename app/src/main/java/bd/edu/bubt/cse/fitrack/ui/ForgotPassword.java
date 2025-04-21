@@ -40,7 +40,7 @@ public class ForgotPassword extends AppCompatActivity {
 
             binding.progressBar.setVisibility(View.VISIBLE);
 
-            RetrofitClient.getAuthApi().sendResetToken(email).enqueue(new Callback<ApiResponseDto<String>>() {
+            RetrofitClient.getAuthApi(this).sendResetToken(email).enqueue(new Callback<ApiResponseDto<String>>() {
                 @Override
                 public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                     Log.d("DEBUG", "onResponse: " + response.body());

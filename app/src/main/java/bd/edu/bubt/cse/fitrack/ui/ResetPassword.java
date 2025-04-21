@@ -51,7 +51,7 @@ public class ResetPassword extends AppCompatActivity {
 
             ResetPasswordRequestDto dto = new ResetPasswordRequestDto(email, password);
             binding.progressBar.setVisibility(View.VISIBLE);
-            RetrofitClient.getAuthApi().resetForgotPassword(dto).enqueue(new Callback<>() {
+            RetrofitClient.getAuthApi(this).resetForgotPassword(dto).enqueue(new Callback<>() {
                 @Override
                 public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                     binding.progressBar.setVisibility(View.GONE);

@@ -66,7 +66,7 @@ public class Login extends AppCompatActivity {
 
         LoginRequest loginRequest = new LoginRequest(email, password);
 
-        RetrofitClient.getAuthApi().login(loginRequest).enqueue(new Callback<LoginResponse>() {
+        RetrofitClient.getAuthApi(this).login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 binding.progressBar.setVisibility(View.GONE);

@@ -39,7 +39,7 @@ public class VerifyForgotCode extends AppCompatActivity {
             }
 
             binding.progressBar.setVisibility(View.VISIBLE);
-            RetrofitClient.getAuthApi().verifyResetPasswordCode(code).enqueue(new Callback<>() {
+            RetrofitClient.getAuthApi(this).verifyResetPasswordCode(code).enqueue(new Callback<>() {
                 @Override
                 public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                     binding.progressBar.setVisibility(View.GONE);
@@ -71,7 +71,7 @@ public class VerifyForgotCode extends AppCompatActivity {
             if (binding.tvError.getVisibility() == VISIBLE) {
                 binding.tvError.setVisibility(View.GONE);
             }
-            RetrofitClient.getAuthApi().resendResetPasswordOTP(email).enqueue(new Callback<ApiResponseDto<String>>() {
+            RetrofitClient.getAuthApi(this).resendResetPasswordOTP(email).enqueue(new Callback<ApiResponseDto<String>>() {
                 @Override
                 public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                     binding.progressBar.setVisibility(View.GONE);

@@ -27,7 +27,7 @@ public interface AuthApi {
 
 
     @Headers("Content-Type: application/json")
-    @GET("auth/signup/verify")
+    @GET("auth/signup/resend")
     Call<ApiResponseDto<String>> resend(@Query("email") String email);
 
     @Headers("Content-Type: application/json")

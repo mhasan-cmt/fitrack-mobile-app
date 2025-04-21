@@ -45,7 +45,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
         binding.progressBar.setVisibility(VISIBLE);
         binding.btnVerifyOtp.setEnabled(false);
 
-        RetrofitClient.getAuthApi().verify(otp).enqueue(new Callback<ApiResponseDto<String>>() {
+        RetrofitClient.getAuthApi(this).verify(otp).enqueue(new Callback<ApiResponseDto<String>>() {
             @Override
             public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                 binding.progressBar.setVisibility(View.GONE);
@@ -78,7 +78,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
             binding.tvError.setVisibility(View.GONE);
         }
 
-        RetrofitClient.getAuthApi().resend(email).enqueue(new Callback<ApiResponseDto<String>>() {
+        RetrofitClient.getAuthApi(this).resend(email).enqueue(new Callback<ApiResponseDto<String>>() {
             @Override
             public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                 binding.progressBar.setVisibility(View.GONE);
