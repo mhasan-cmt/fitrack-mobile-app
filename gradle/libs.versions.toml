@@ -17,6 +17,7 @@ material = "1.12.0"
 activity = "1.10.0"
 constraintlayout = "2.1.4"
 playServicesAuth = "21.3.0"
+recyclerview = "1.4.0"
 retrofit = "2.11.0"
 roomGuava = "2.6.1"
 roomPaging = "2.6.1"
@@ -49,6 +50,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 room-guava = { module = "androidx.room:room-guava", version.ref = "roomGuava" }
 room-paging = { module = "androidx.room:room-paging", version.ref = "roomPaging" }

@@ -16,9 +16,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+
 import com.google.android.material.navigation.NavigationView;
 
 import bd.edu.bubt.cse.fitrack.R;
+import bd.edu.bubt.cse.fitrack.data.local.TokenManager;
 import bd.edu.bubt.cse.fitrack.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,11 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
 
-        // Securely retrieve JWT token
-        String token = null;
-        token = sharedPreferences.getString("jwt_token", null);
-
-        if (token == null) {
+        // Check if user is authenticated using TokenManager
+        TokenManager tokenManager = TokenManager.getInstance(this);
+        if (!tokenManager.hasValidToken()) {
             startActivity(new Intent(MainActivity.this, Login.class));
             finish();
             return;
@@ -64,10 +64,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadFragment(new DashboardFragment());
         }
 
-        String username = null;
-        username = sharedPreferences.getString("loggedInUsername", null);
+        // Get username from TokenManager
+        tokenManager = TokenManager.getInstance(this);
+        String username = tokenManager.getUsername();
 
-        tvUserEmail.setText(username!=null ? username : "User");
+        tvUserEmail.setText(username != null ? username : "User");
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar,
@@ -97,6 +98,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (item.getItemId() == R.id.nav_dashboard) {
             fragment = new DashboardFragment();
+        } else if (item.getItemId() == R.id.nav_transactions) {
+            fragment = new TransactionsFragment();
+        } else if (item.getItemId() == R.id.nav_categories) {
+            fragment = new CategoriesFragment();
+        } else if (item.getItemId() == R.id.nav_profile) {
+            fragment = new ProfileFragment();
+        } else if (item.getItemId() == R.id.nav_budget) {
+            // TODO: Implement BudgetFragment
+            Toast.makeText(this, "Budget feature coming soon", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.nav_reports) {
+            // TODO: Implement ReportsFragment
+            Toast.makeText(this, "Reports feature coming soon", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.nav_settings) {
+            // TODO: Implement SettingsFragment
+            Toast.makeText(this, "Settings feature coming soon", Toast.LENGTH_SHORT).show();
         } else if (item.getItemId() == R.id.nav_logout) {
             logoutUser();
         }
@@ -110,13 +126,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void logoutUser() {
-        SharedPreferences.Editor userEditor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
-        userEditor.remove("loggedInUsername");
-        userEditor.apply();
-
-        userEditor.remove("jwt_token");
-        userEditor.apply();
-
+        // Use TokenManager to securely clear all authentication data
+        TokenManager tokenManager = TokenManager.getInstance(this);
+        tokenManager.clearAll();
 
         Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(MainActivity.this, Login.class));
@@ -139,4 +151,3 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 }
-

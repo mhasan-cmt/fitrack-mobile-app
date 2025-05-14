@@ -1,12 +1,12 @@
 package bd.edu.bubt.cse.fitrack.data.api;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
 
+import bd.edu.bubt.cse.fitrack.data.local.TokenManager;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -14,17 +14,17 @@ import okhttp3.Response;
 public class AuthInterceptor implements Interceptor {
 
     private final Context context;
+    private final TokenManager tokenManager;
 
     public AuthInterceptor(Context context) {
         this.context = context;
+        this.tokenManager = TokenManager.getInstance(context);
     }
 
     @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
-        SharedPreferences prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", null);
-
+        String token = tokenManager.getToken();
         Request originalRequest = chain.request();
         Request.Builder builder = originalRequest.newBuilder();
 

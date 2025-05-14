@@ -6,6 +6,16 @@
         android:title="Dashboard" />
 
     <item
+        android:id="@+id/nav_transactions"
+        android:icon="@drawable/ic_budget"
+        android:title="Transactions" />
+
+    <item
+        android:id="@+id/nav_categories"
+        android:icon="@drawable/ic_budget"
+        android:title="Categories" />
+
+    <item
         android:id="@+id/nav_budget"
         android:icon="@drawable/ic_budget"
         android:title="Budget" />
@@ -16,9 +26,15 @@
         android:title="Reports" />
 
     <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_setting"
+        android:title="Profile" />
+
+    <item
         android:id="@+id/nav_settings"
         android:icon="@drawable/ic_setting"
         android:title="Settings" />
+
     <item
         android:id="@+id/nav_logout"
         android:icon="@drawable/arrow_back"
