@@ -189,4 +189,57 @@ public class TokenManager {
     public boolean hasValidToken() {
         return getToken() != null;
     }
+
+    public void saveUserID(@NonNull Long id) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
+            byte[] iv = cipher.getIV();
+            byte[] encryptedId = cipher.doFinal(id.toString().getBytes());
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("user_id", Base64.encodeToString(encryptedId, Base64.DEFAULT));
+            editor.putString("user_id_iv", Base64.encodeToString(iv, Base64.DEFAULT));
+            editor.apply();
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving user id", e);
+            // Fallback to unencrypted storage if encryption fails
+            preferences.edit().putString("user_id", id.toString()).apply();
+            preferences.edit().remove("user_id_iv").apply();
+        }
+    }
+
+    public Long getUserID() {
+        String encryptedId = preferences.getString("user_id", null);
+        String ivString = preferences.getString("user_id_iv", null);
+
+        if (encryptedId == null) {
+            return null;
+        }
+
+        // If IV is missing, the ID might be stored unencrypted (fallback)
+        if (ivString == null) {
+            try {
+                return Long.parseLong(encryptedId);
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Error parsing user id", e);
+                return null;
+            }
+        }
+
+        try {
+            byte[] encryptedBytes = Base64.decode(encryptedId, Base64.DEFAULT);
+            byte[] iv = Base64.decode(ivString, Base64.DEFAULT);
+
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+            cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), spec);
+
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+            return Long.parseLong(new String(decryptedBytes));
+        } catch (Exception e) {
+            Log.e(TAG, "Error retrieving user id", e);
+            return null;
+        }
+    }
 }

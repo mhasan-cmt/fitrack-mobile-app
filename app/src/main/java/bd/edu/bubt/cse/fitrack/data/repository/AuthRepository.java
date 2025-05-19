@@ -44,6 +44,7 @@ public class AuthRepository {
                     LoginResponse loginResponse = response.body();
                     tokenManager.saveToken(loginResponse.getToken());
                     tokenManager.saveUsername(loginResponse.getUsername());
+                    tokenManager.saveUserID(loginResponse.getId());
                     callback.onSuccess(loginResponse);
                 } else {
                     String errorMsg = "Invalid credentials";

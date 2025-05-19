@@ -16,8 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.edu.bubt.cse.fitrack.R;
+import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
+import bd.edu.bubt.cse.fitrack.data.repository.CategoryRepository;
+import bd.edu.bubt.cse.fitrack.databinding.FragmentCategoriesBinding;
 import bd.edu.bubt.cse.fitrack.domain.model.Category;
 import bd.edu.bubt.cse.fitrack.ui.adapter.CategoryAdapter;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.CategoryViewModel;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
 
 public class CategoriesFragment extends Fragment {
 
@@ -25,6 +30,8 @@ public class CategoriesFragment extends Fragment {
     private CategoryAdapter categoryAdapter;
     private List<Category> categoryList;
     private FloatingActionButton fabAddCategory;
+    private CategoryViewModel categoryViewModel;
+    private FragmentCategoriesBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +42,10 @@ public class CategoriesFragment extends Fragment {
 
         rvCategories.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        observeViewModel();
+
+        categoryViewModel.getAllCategories();
+
         // Set up FAB click listener
         fabAddCategory.setOnClickListener(v -> {
             // Navigate to add category screen
@@ -44,27 +55,34 @@ public class CategoriesFragment extends Fragment {
                     .commit();
         });
 
-        // Load Categories
-        loadCategories();
-
         return root;
     }
 
-    private void loadCategories() {
-        // In a real app, this would come from a repository or ViewModel
-        categoryList = new ArrayList<>();
-        categoryList.add(new Category(101L, "Groceries", "Food and household items", 0, "user@example.com"));
-        categoryList.add(new Category(102L, "Income", "Regular income sources", 1, "user@example.com"));
-        categoryList.add(new Category(103L, "Utilities", "Bills and utilities", 0, "user@example.com"));
-        categoryList.add(new Category(104L, "Dining", "Restaurants and eating out", 0, "user@example.com"));
-        categoryList.add(new Category(105L, "Freelance", "Freelance income", 1, "user@example.com"));
-        categoryList.add(new Category(106L, "Transportation", "Gas, public transport, etc.", 0, "user@example.com"));
-        categoryList.add(new Category(107L, "Entertainment", "Movies, games, etc.", 0, "user@example.com"));
-        categoryList.add(new Category(108L, "Bonus", "Bonuses and one-time income", 1, "user@example.com"));
-        categoryList.add(new Category(109L, "Healthcare", "Medical expenses", 0, "user@example.com"));
-        categoryList.add(new Category(110L, "Education", "Courses, books, etc.", 0, "user@example.com"));
+    private void observeViewModel() {
+        categoryViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading != null) {
+                binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            }
+        });
 
-        categoryAdapter = new CategoryAdapter(categoryList);
-        rvCategories.setAdapter(categoryAdapter);
+        categoryViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMsg -> {
+            if (errorMsg != null) {
+                Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        categoryViewModel.getCategoriesState().observe(getViewLifecycleOwner(), categoriesState -> {
+            if (categoriesState instanceof CategoryViewModel.CategoriesState.Success) {
+                CategoryViewModel.CategoriesState.Success success = (CategoryViewModel.CategoriesState.Success) categoriesState;
+                categoryList = success.getData();
+
+                categoryAdapter = new CategoryAdapter(categoryList);
+                rvCategories.setAdapter(categoryAdapter);
+
+            } else if (categoriesState instanceof CategoryViewModel.CategoriesState.Error) {
+                CategoryViewModel.CategoriesState.Error error = (CategoryViewModel.CategoriesState.Error) categoriesState;
+                Toast.makeText(getContext(), "Failed to load profile: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

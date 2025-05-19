@@ -16,5 +16,5 @@ public class Category {
     
     private int type; // 0 for expense, 1 for income
     
-    private String userEmail;
+    private Long userId;
 }

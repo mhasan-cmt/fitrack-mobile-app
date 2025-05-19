@@ -75,16 +75,16 @@ public class AddTransactionFragment extends Fragment {
 
     private void loadCategories() {
         // In a real app, this would come from a repository or ViewModel
-        categoryList.add(new Category(101L, "Groceries", "Food and household items", 0, "user@example.com"));
-        categoryList.add(new Category(102L, "Income", "Regular income sources", 1, "user@example.com"));
-        categoryList.add(new Category(103L, "Utilities", "Bills and utilities", 0, "user@example.com"));
-        categoryList.add(new Category(104L, "Dining", "Restaurants and eating out", 0, "user@example.com"));
-        categoryList.add(new Category(105L, "Freelance", "Freelance income", 1, "user@example.com"));
-        categoryList.add(new Category(106L, "Transportation", "Gas, public transport, etc.", 0, "user@example.com"));
-        categoryList.add(new Category(107L, "Entertainment", "Movies, games, etc.", 0, "user@example.com"));
-        categoryList.add(new Category(108L, "Bonus", "Bonuses and one-time income", 1, "user@example.com"));
-        categoryList.add(new Category(109L, "Healthcare", "Medical expenses", 0, "user@example.com"));
-        categoryList.add(new Category(110L, "Education", "Courses, books, etc.", 0, "user@example.com"));
+        categoryList.add(new Category(101L, "Groceries", "Food and household items", 0, 1L));
+        categoryList.add(new Category(102L, "Income", "Regular income sources", 1, 1L));
+        categoryList.add(new Category(103L, "Utilities", "Bills and utilities", 0, 1L));
+        categoryList.add(new Category(104L, "Dining", "Restaurants and eating out", 0, 1L));
+        categoryList.add(new Category(105L, "Freelance", "Freelance income", 1, 1L));
+        categoryList.add(new Category(106L, "Transportation", "Gas, public transport, etc.", 0, 1L));
+        categoryList.add(new Category(107L, "Entertainment", "Movies, games, etc.", 0, 1L));
+        categoryList.add(new Category(108L, "Bonus", "Bonuses and one-time income", 1, 1L));
+        categoryList.add(new Category(109L, "Healthcare", "Medical expenses", 0, 1L));
+        categoryList.add(new Category(110L, "Education", "Courses, books, etc.", 0, 1L));
 
         // Extract category names for spinner
         for (Category category : categoryList) {

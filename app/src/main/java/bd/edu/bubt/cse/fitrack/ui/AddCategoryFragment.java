@@ -1,5 +1,6 @@
 package bd.edu.bubt.cse.fitrack.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,9 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.textfield.TextInputEditText;
 
 import bd.edu.bubt.cse.fitrack.R;
+import bd.edu.bubt.cse.fitrack.data.local.TokenManager;
 import bd.edu.bubt.cse.fitrack.domain.model.Category;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.CategoryViewModel;
 
 public class AddCategoryFragment extends Fragment {
 
@@ -24,6 +27,7 @@ public class AddCategoryFragment extends Fragment {
     private RadioButton rbExpense;
     private RadioButton rbIncome;
     private Button btnSaveCategory;
+    private CategoryViewModel categoryViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

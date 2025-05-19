@@ -6,19 +6,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
 import bd.edu.bubt.cse.fitrack.databinding.FragmentProfileBinding;
-import bd.edu.bubt.cse.fitrack.ui.viewmodel.LoginViewModel;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
 
 public class ProfileFragment extends Fragment {

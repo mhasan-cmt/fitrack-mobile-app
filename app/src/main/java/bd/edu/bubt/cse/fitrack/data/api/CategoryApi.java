@@ -15,7 +15,7 @@ import retrofit2.http.Path;
 
 public interface CategoryApi {
     @Headers("Content-Type: application/json")
-    @GET("category")
+    @GET("category/getAll")
     Call<ApiResponseDto<List<Category>>> getAllCategories();
 
     @Headers("Content-Type: application/json")
