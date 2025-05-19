@@ -7,56 +7,92 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import bd.edu.bubt.cse.fitrack.R;
+import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
+import bd.edu.bubt.cse.fitrack.databinding.FragmentProfileBinding;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.LoginViewModel;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView tvUsername;
-    private TextView tvEmail;
-    private Button btnEditProfile;
-    private Button btnChangePassword;
+    private FragmentProfileBinding binding;
+    private ProfileViewModel profileViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_profile, container, false);
+        binding = FragmentProfileBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        // Initialize views
-        tvUsername = root.findViewById(R.id.tv_username);
-        tvEmail = root.findViewById(R.id.tv_email);
-        btnEditProfile = root.findViewById(R.id.btn_edit_profile);
-        btnChangePassword = root.findViewById(R.id.btn_change_password);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
-        // Set up click listeners
-        btnEditProfile.setOnClickListener(v -> {
-            // TODO: Navigate to edit profile screen
-            Toast.makeText(getContext(), "Edit profile", Toast.LENGTH_SHORT).show();
-        });
+        observeViewModel();
 
-        btnChangePassword.setOnClickListener(v -> {
-            // TODO: Navigate to change password screen
-            Toast.makeText(getContext(), "Change password", Toast.LENGTH_SHORT).show();
-        });
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString("loggedInUsername", null);
 
-        // Load user data
-        loadUserData();
+        if (username != null) {
+            profileViewModel.getUserProfileData(username);
+        }
+
+        binding.btnEditProfile.setOnClickListener(v ->
+                Toast.makeText(getContext(), "Edit profile", Toast.LENGTH_SHORT).show()
+        );
+
+        binding.btnChangePassword.setOnClickListener(v ->
+                Toast.makeText(getContext(), "Change password", Toast.LENGTH_SHORT).show()
+        );
 
         return root;
     }
 
-    private void loadUserData() {
-        // In a real app, this would come from a repository or ViewModel
-        // For now, we'll use SharedPreferences to get the username
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString("loggedInUsername", "User");
-        String email = "user@example.com"; // This would come from the API in a real app
+    private void observeViewModel() {
+        profileViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading != null) {
+                binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            }
+        });
 
-        tvUsername.setText(username);
-        tvEmail.setText(email);
+        profileViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMsg -> {
+            if (errorMsg != null) {
+                Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        profileViewModel.getProfileState().observe(getViewLifecycleOwner(), profileState -> {
+            if (profileState instanceof ProfileViewModel.ProfileState.Success) {
+                ProfileViewModel.ProfileState.Success success = (ProfileViewModel.ProfileState.Success) profileState;
+                ProfileResponse profile = success.getData();
+
+                binding.tvUsername.setText(profile.getUsername());
+                binding.tvEmail.setText(profile.getEmail());
+                binding.tvFirstName.setText(profile.getFirstName());
+                binding.tvLastName.setText(profile.getLastName());
+                binding.tvPhone.setText(profile.getPhone());
+                binding.tvGender.setText(profile.getGender());
+                binding.tvDateOfBirth.setText(profile.getDateOfBirth());
+                binding.tvAddress.setText(profile.getAddress());
+                binding.tvRoles.setText(profile.getRoles() != null ? android.text.TextUtils.join(", ",
+                    profile.getRoles().stream().map(ProfileResponse.Role::getName).toArray(String[]::new)) : "N/A");
+
+            } else if (profileState instanceof ProfileViewModel.ProfileState.Error) {
+                ProfileViewModel.ProfileState.Error error = (ProfileViewModel.ProfileState.Error) profileState;
+                Toast.makeText(getContext(), "Failed to load profile: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
+

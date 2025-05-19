@@ -9,9 +9,12 @@ import bd.edu.bubt.cse.fitrack.data.api.RetrofitClient;
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
 import bd.edu.bubt.cse.fitrack.data.dto.LoginRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.LoginResponse;
+import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
 import bd.edu.bubt.cse.fitrack.data.dto.RegisterRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.ResetPasswordRequestDto;
 import bd.edu.bubt.cse.fitrack.data.local.TokenManager;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.LoginViewModel;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -306,6 +309,38 @@ public class AuthRepository {
     public void logout() {
         tokenManager.clearAll();
     }
+
+    public void getUserProfileData(String username, AuthCallback<ProfileResponse> authCallback) {
+        if (!isNetworkAvailable()) {
+            authCallback.onError("No internet connection. Please check your network settings.");
+            return;
+        }
+
+        authApi.getUserProfileData(username).enqueue(new Callback<ApiResponseDto<ProfileResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponseDto<ProfileResponse>> call, Response<ApiResponseDto<ProfileResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    authCallback.onSuccess(response.body().getResponse());
+                } else {
+                    String errorMsg = "Failed to fetch user profile data";
+                    if (response.code() == 404) {
+                        errorMsg = "User not found";
+                    } else if (response.code() >= 500) {
+                        errorMsg = "Server error. Please try again later.";
+                    } else if (response.body() != null) {
+                        errorMsg = "Something went wrong";
+                    }
+                    authCallback.onError(errorMsg);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseDto<ProfileResponse>> call, Throwable t) {
+                authCallback.onError("Network error: " + t.getMessage());
+            }
+        });
+    }
+
 
     public interface AuthCallback<T> {
         void onSuccess(T result);

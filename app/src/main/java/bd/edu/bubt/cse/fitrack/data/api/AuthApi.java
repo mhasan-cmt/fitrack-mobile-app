@@ -3,8 +3,11 @@ package bd.edu.bubt.cse.fitrack.data.api;
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
 import bd.edu.bubt.cse.fitrack.data.dto.LoginRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.LoginResponse;
+import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
 import bd.edu.bubt.cse.fitrack.data.dto.RegisterRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.ResetPasswordRequestDto;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.LoginViewModel;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -46,4 +49,7 @@ public interface AuthApi {
     @GET("auth/forgotPassword/resendEmail")
     Call<ApiResponseDto<String>> resendResetPasswordOTP(@Query("email") String email);
 
+    @Headers("Content-Type: application/json")
+    @GET("user/get")
+    Call<ApiResponseDto<ProfileResponse>> getUserProfileData(@Query("username") String username);
 }
