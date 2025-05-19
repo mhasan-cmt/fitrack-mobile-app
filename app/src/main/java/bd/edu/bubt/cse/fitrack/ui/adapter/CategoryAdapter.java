@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
+import java.util.Objects;
 
 import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.domain.model.Category;
@@ -31,11 +32,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category category = categoryList.get(position);
-        holder.tvCategoryName.setText(category.getName());
-        holder.tvCategoryDescription.setText(category.getDescription());
+        holder.tvCategoryName.setText(category.getCategoryName());
         
         // Set type text based on category type
-        if (category.getType() == 0) {
+        if (Objects.equals(category.getTransactionType().getTransactionTypeName(), "TYPE_EXPENSE")) {
             holder.tvCategoryType.setText("Expense");
             holder.tvCategoryType.setTextColor(holder.itemView.getContext().getResources().getColor(android.R.color.holo_red_dark));
         } else {
@@ -56,7 +56,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             super(itemView);
             tvCategoryName = itemView.findViewById(R.id.tv_category_name);
             tvCategoryType = itemView.findViewById(R.id.tv_category_type);
-            tvCategoryDescription = itemView.findViewById(R.id.tv_category_description);
         }
     }
 }

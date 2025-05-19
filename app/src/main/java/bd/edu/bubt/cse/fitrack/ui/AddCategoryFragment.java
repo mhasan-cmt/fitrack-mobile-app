@@ -35,7 +35,6 @@ public class AddCategoryFragment extends Fragment {
 
         // Initialize views
         etCategoryName = root.findViewById(R.id.et_category_name);
-        etCategoryDescription = root.findViewById(R.id.et_category_description);
         rgCategoryType = root.findViewById(R.id.rg_category_type);
         rbExpense = root.findViewById(R.id.rb_expense);
         rbIncome = root.findViewById(R.id.rb_income);
@@ -51,7 +50,7 @@ public class AddCategoryFragment extends Fragment {
         // Validate inputs
         String name = etCategoryName.getText().toString().trim();
         String description = etCategoryDescription.getText().toString().trim();
-        int type = rbIncome.isChecked() ? 1 : 0; // 0 for expense, 1 for income
+        Category.TransactionTypeEnum type = rbIncome.isChecked() ? Category.TransactionTypeEnum.TYPE_INCOME :  Category.TransactionTypeEnum.TYPE_EXPENSE;
 
         if (name.isEmpty()) {
             etCategoryName.setError("Category name is required");
@@ -65,9 +64,7 @@ public class AddCategoryFragment extends Fragment {
 
         // Create category object
         Category category = new Category();
-        category.setName(name);
-        category.setDescription(description);
-        category.setType(type);
+        category.setCategoryName(name);
         // userEmail will be set by the backend based on the authenticated user
 
         // TODO: Save category to backend

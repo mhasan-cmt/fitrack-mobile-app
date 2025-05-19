@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,15 +32,17 @@ public class CategoriesFragment extends Fragment {
     private CategoryAdapter categoryAdapter;
     private List<Category> categoryList;
     private FloatingActionButton fabAddCategory;
+    private ProgressBar progressBar;
     private CategoryViewModel categoryViewModel;
-    private FragmentCategoriesBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_categories, container, false);
+        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
 
         rvCategories = root.findViewById(R.id.rv_categories);
         fabAddCategory = root.findViewById(R.id.fab_add_category);
+        progressBar = root.findViewById(R.id.progress_bar);
 
         rvCategories.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -61,7 +65,7 @@ public class CategoriesFragment extends Fragment {
     private void observeViewModel() {
         categoryViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading != null) {
-                binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             }
         });
 

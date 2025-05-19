@@ -9,8 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
-import bd.edu.bubt.cse.fitrack.data.repository.AuthRepository;
 import bd.edu.bubt.cse.fitrack.data.repository.CategoryRepository;
 import bd.edu.bubt.cse.fitrack.domain.model.Category;
 
@@ -19,7 +17,7 @@ public class CategoryViewModel extends AndroidViewModel {
     private final MutableLiveData<CategoriesState> categoriesState = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    public CategoryViewModel(@NonNull Application application, CategoryRepository categoryRepository) {
+    public CategoryViewModel(@NonNull Application application) {
         super(application);
         this.categoryRepository = new CategoryRepository(application);
     }
