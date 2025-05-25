@@ -38,6 +38,7 @@ public class TokenManager {
     private static final String PREF_NAME = "MyPrefs";
     private static final String KEY_TOKEN = "jwt_token";
     private static final String KEY_USERNAME = "loggedInUsername";
+    private static final String KEY_EMAIL = "loggedInUserEmail";
     private static final String KEY_TOKEN_IV = "jwt_token_iv";
     private static final int GCM_IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 128;
@@ -165,11 +166,19 @@ public class TokenManager {
         preferences.edit().putString(KEY_USERNAME, username).apply();
     }
 
+    public void saveEmail(String email) {
+        preferences.edit().putString(KEY_EMAIL, email).apply();
+    }
+
     /**
      * Retrieves the username from SharedPreferences
      */
     public String getUsername() {
         return preferences.getString(KEY_USERNAME, null);
+    }
+
+    public String getEmail() {
+        return preferences.getString(KEY_EMAIL, null);
     }
 
     /**
