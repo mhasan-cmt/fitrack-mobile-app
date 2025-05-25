@@ -3,6 +3,7 @@ package bd.edu.bubt.cse.fitrack.data.api;
 import java.util.List;
 
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
+import bd.edu.bubt.cse.fitrack.data.dto.CreateCategoryRequest;
 import bd.edu.bubt.cse.fitrack.domain.model.Category;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -19,8 +20,8 @@ public interface CategoryApi {
     Call<ApiResponseDto<List<Category>>> getAllCategories();
 
     @Headers("Content-Type: application/json")
-    @POST("category")
-    Call<ApiResponseDto<Category>> createCategory(@Body Category category);
+    @POST("category/user/new")
+    Call<ApiResponseDto<String>> createCategory(@Body CreateCategoryRequest category);
 
     @Headers("Content-Type: application/json")
     @GET("category/{id}")
@@ -36,4 +37,5 @@ public interface CategoryApi {
     @Headers("Content-Type: application/json")
     @DELETE("category/{id}")
     Call<ApiResponseDto<Void>> deleteCategory(@Path("id") long id);
+
 }
