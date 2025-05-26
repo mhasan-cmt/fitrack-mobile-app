@@ -45,24 +45,33 @@ public class TransactionViewModel extends AndroidViewModel {
         return isLoading;
     }
 
-    public void loadTransactions(int page, int size) {
+    public void loadTransactions(int page, int size, String searchKey, String sortField, String sortDirec, String userId) {
         isLoading.setValue(true);
-        transactionRepository.getAllTransactions(page, size, new TransactionRepository.TransactionCallback<List<Transaction>>() {
-            @Override
-            public void onSuccess(List<Transaction> result) {
-                isLoading.postValue(false);
-                transactions.postValue(result);
-                transactionState.postValue(new TransactionState.Success());
-            }
+        transactionRepository.getAllTransactions(
+                page,
+                size,
+                searchKey,
+                sortField,
+                sortDirec,
+                userId,
+                new TransactionRepository.TransactionCallback<List<Transaction>>() {
+                    @Override
+                    public void onSuccess(List<Transaction> result) {
+                        isLoading.postValue(false);
+                        transactions.postValue(result);
+                        transactionState.postValue(new TransactionState.Success());
+                    }
 
-            @Override
-            public void onError(String errorMsg) {
-                isLoading.postValue(false);
-                errorMessage.postValue(errorMsg);
-                transactionState.postValue(new TransactionState.Error(errorMsg));
-            }
-        });
+                    @Override
+                    public void onError(String errorMsg) {
+                        isLoading.postValue(false);
+                        errorMessage.postValue(errorMsg);
+                        transactionState.postValue(new TransactionState.Error(errorMsg));
+                    }
+                }
+        );
     }
+
 
     public void getTransactionById(long id) {
         isLoading.setValue(true);
@@ -92,7 +101,7 @@ public class TransactionViewModel extends AndroidViewModel {
                 selectedTransaction.postValue(result);
                 transactionState.postValue(new TransactionState.Success());
                 // Reload transactions to reflect the new transaction
-                loadTransactions(0, 10);
+//                loadTransactions(0, 10);
             }
 
             @Override
@@ -113,7 +122,7 @@ public class TransactionViewModel extends AndroidViewModel {
                 selectedTransaction.postValue(result);
                 transactionState.postValue(new TransactionState.Success());
                 // Reload transactions to reflect the updated transaction
-                loadTransactions(0, 10);
+//                loadTransactions(0, 10);
             }
 
             @Override
@@ -133,7 +142,7 @@ public class TransactionViewModel extends AndroidViewModel {
                 isLoading.postValue(false);
                 transactionState.postValue(new TransactionState.Success());
                 // Reload transactions to reflect the deleted transaction
-                loadTransactions(0, 10);
+//                loadTransactions(0, 10);
             }
 
             @Override

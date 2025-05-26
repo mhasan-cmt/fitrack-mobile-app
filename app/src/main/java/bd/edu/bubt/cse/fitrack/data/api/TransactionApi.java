@@ -16,12 +16,15 @@ import retrofit2.http.Query;
 
 public interface TransactionApi {
     @Headers("Content-Type: application/json")
-    @GET("transaction")
+    @GET("transaction/getByUser")
     Call<ApiResponseDto<List<Transaction>>> getAllTransactions(
             @Query("page") int page,
-            @Query("size") int size
+            @Query("size") int size,
+            @Query("searchKey") String searchKey,
+            @Query("sortField") String sortField,
+            @Query("sortDirec") String sortDirec,
+            @Query("id") String userId
     );
-
     @Headers("Content-Type: application/json")
     @POST("transaction")
     Call<ApiResponseDto<Transaction>> createTransaction(@Body Transaction transaction);

@@ -19,23 +19,25 @@ public class TransactionRepository {
         this.transactionApi = RetrofitClient.getTransactionApi(context);
     }
 
-    public void getAllTransactions(int page, int size, TransactionCallback<List<Transaction>> callback) {
-        transactionApi.getAllTransactions(page, size).enqueue(new Callback<ApiResponseDto<List<Transaction>>>() {
-            @Override
-            public void onResponse(Call<ApiResponseDto<List<Transaction>>> call, Response<ApiResponseDto<List<Transaction>>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    callback.onSuccess(response.body().getResponse());
-                } else {
-                    callback.onError("Failed to get transactions");
-                }
-            }
+    public void getAllTransactions(int page, int size, String searchKey, String sortField, String sortDirec, String userId, TransactionCallback<List<Transaction>> callback) {
+        transactionApi.getAllTransactions(page, size, searchKey, sortField, sortDirec, userId)
+                .enqueue(new Callback<ApiResponseDto<List<Transaction>>>() {
+                    @Override
+                    public void onResponse(Call<ApiResponseDto<List<Transaction>>> call, Response<ApiResponseDto<List<Transaction>>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            callback.onSuccess(response.body().getResponse());
+                        } else {
+                            callback.onError("Failed to get transactions: " + response.code());
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call<ApiResponseDto<List<Transaction>>> call, Throwable t) {
-                callback.onError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Call<ApiResponseDto<List<Transaction>>> call, Throwable t) {
+                        callback.onError("Network error: " + t.getMessage());
+                    }
+                });
     }
+
 
     public void getTransactionById(long id, TransactionCallback<Transaction> callback) {
         transactionApi.getTransactionById(id).enqueue(new Callback<ApiResponseDto<Transaction>>() {
