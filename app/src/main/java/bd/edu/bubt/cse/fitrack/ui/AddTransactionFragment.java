@@ -140,7 +140,7 @@ public class AddTransactionFragment extends Fragment {
         transaction.setTransactionType(type);
         transaction.setDescription(description);
         transaction.setAmount(amount);
-        transaction.setDate(selectedDate);
+        transaction.setDate(selectedDate.toString());
         // userEmail will be set by the backend based on the authenticated user
 
         // TODO: Save transaction to backend

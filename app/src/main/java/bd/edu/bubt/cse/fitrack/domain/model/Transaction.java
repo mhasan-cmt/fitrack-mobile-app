@@ -22,7 +22,7 @@ public class Transaction {
 
     private double amount;
 
-    private LocalDate date;
+    private String date;
 
     private String userEmail;
 }

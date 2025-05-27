@@ -3,10 +3,13 @@ package bd.edu.bubt.cse.fitrack.data.repository;
 import android.content.Context;
 
 import java.util.List;
+import java.util.Map;
 
 import bd.edu.bubt.cse.fitrack.data.api.RetrofitClient;
 import bd.edu.bubt.cse.fitrack.data.api.TransactionApi;
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
+import bd.edu.bubt.cse.fitrack.data.dto.PaginatedTransactionResponse;
+import bd.edu.bubt.cse.fitrack.data.dto.TransactionResponseWrapper;
 import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,24 +22,42 @@ public class TransactionRepository {
         this.transactionApi = RetrofitClient.getTransactionApi(context);
     }
 
-    public void getAllTransactions(int page, int size, String searchKey, String sortField, String sortDirec, String userId, TransactionCallback<List<Transaction>> callback) {
-        transactionApi.getAllTransactions(page, size, searchKey, sortField, sortDirec, userId)
-                .enqueue(new Callback<ApiResponseDto<List<Transaction>>>() {
+    public void getAllTransactions(
+            int page,
+            int size,
+            String searchKey,
+            String sortField,
+            String sortDirec,
+            String userEmail,
+            String transactionType,
+            TransactionCallback<PaginatedTransactionResponse> callback
+    ) {
+        transactionApi.getAllTransactions(page, size, searchKey, sortField, sortDirec, userEmail, transactionType)
+                .enqueue(new Callback<ApiResponseDto<TransactionResponseWrapper>>() {
                     @Override
-                    public void onResponse(Call<ApiResponseDto<List<Transaction>>> call, Response<ApiResponseDto<List<Transaction>>> response) {
+                    public void onResponse(Call<ApiResponseDto<TransactionResponseWrapper>> call, Response<ApiResponseDto<TransactionResponseWrapper>> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            callback.onSuccess(response.body().getResponse());
+                            ApiResponseDto<TransactionResponseWrapper> apiResponse = response.body();
+
+                            PaginatedTransactionResponse result = new PaginatedTransactionResponse(
+                                    apiResponse.getResponse().getData(),
+                                    apiResponse.getResponse().getTotalNoOfPages()
+                            );
+
+                            callback.onSuccess(result);
                         } else {
                             callback.onError("Failed to get transactions: " + response.code());
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ApiResponseDto<List<Transaction>>> call, Throwable t) {
+                    public void onFailure(Call<ApiResponseDto<TransactionResponseWrapper>> call, Throwable t) {
                         callback.onError("Network error: " + t.getMessage());
                     }
                 });
     }
+
+
 
 
     public void getTransactionById(long id, TransactionCallback<Transaction> callback) {

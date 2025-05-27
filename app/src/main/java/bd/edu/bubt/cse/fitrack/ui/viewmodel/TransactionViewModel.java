@@ -7,8 +7,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import bd.edu.bubt.cse.fitrack.data.dto.PaginatedTransactionResponse;
 import bd.edu.bubt.cse.fitrack.data.repository.TransactionRepository;
 import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
 
@@ -19,6 +22,7 @@ public class TransactionViewModel extends AndroidViewModel {
     private final MutableLiveData<TransactionState> transactionState = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private final MutableLiveData<Integer> totalPages = new MutableLiveData<>(0); // <-- New
 
     public TransactionViewModel(@NonNull Application application) {
         super(application);
@@ -45,20 +49,26 @@ public class TransactionViewModel extends AndroidViewModel {
         return isLoading;
     }
 
-    public void loadTransactions(int page, int size, String searchKey, String sortField, String sortDirec, String userId) {
+    public LiveData<Integer> getTotalPages() {
+        return totalPages;
+    }
+
+    public void loadTransactions(int page, int size, String searchKey, String sortField, String sortDirec, String userEmail, String transactionType) {
         isLoading.setValue(true);
         transactionRepository.getAllTransactions(
-                page,
-                size,
-                searchKey,
-                sortField,
-                sortDirec,
-                userId,
-                new TransactionRepository.TransactionCallback<List<Transaction>>() {
+                page, size, searchKey, sortField, sortDirec, userEmail, transactionType,
+                new TransactionRepository.TransactionCallback<PaginatedTransactionResponse>() {
                     @Override
-                    public void onSuccess(List<Transaction> result) {
+                    public void onSuccess(PaginatedTransactionResponse response) {
                         isLoading.postValue(false);
-                        transactions.postValue(result);
+
+                        List<Transaction> allTransactions = new ArrayList<>();
+                        for (List<Transaction> list : response.getGroupedTransactions().values()) {
+                            allTransactions.addAll(list);
+                        }
+
+                        transactions.postValue(allTransactions);
+                        totalPages.postValue(response.getTotalPages()); // <-- Update total pages
                         transactionState.postValue(new TransactionState.Success());
                     }
 
@@ -71,7 +81,6 @@ public class TransactionViewModel extends AndroidViewModel {
                 }
         );
     }
-
 
     public void getTransactionById(long id) {
         isLoading.setValue(true);
@@ -100,8 +109,6 @@ public class TransactionViewModel extends AndroidViewModel {
                 isLoading.postValue(false);
                 selectedTransaction.postValue(result);
                 transactionState.postValue(new TransactionState.Success());
-                // Reload transactions to reflect the new transaction
-//                loadTransactions(0, 10);
             }
 
             @Override
@@ -121,8 +128,6 @@ public class TransactionViewModel extends AndroidViewModel {
                 isLoading.postValue(false);
                 selectedTransaction.postValue(result);
                 transactionState.postValue(new TransactionState.Success());
-                // Reload transactions to reflect the updated transaction
-//                loadTransactions(0, 10);
             }
 
             @Override
@@ -141,8 +146,6 @@ public class TransactionViewModel extends AndroidViewModel {
             public void onSuccess(Void result) {
                 isLoading.postValue(false);
                 transactionState.postValue(new TransactionState.Success());
-                // Reload transactions to reflect the deleted transaction
-//                loadTransactions(0, 10);
             }
 
             @Override
@@ -154,27 +157,13 @@ public class TransactionViewModel extends AndroidViewModel {
         });
     }
 
-    // State classes for transaction operations
     public static abstract class TransactionState {
-
-        public static class Loading extends TransactionState {
-            // Empty class
-        }
-
-        public static class Success extends TransactionState {
-            // Empty class
-        }
-
+        public static class Loading extends TransactionState {}
+        public static class Success extends TransactionState {}
         public static class Error extends TransactionState {
             private final String message;
-
-            public Error(String message) {
-                this.message = message;
-            }
-
-            public String getMessage() {
-                return message;
-            }
+            public Error(String message) { this.message = message; }
+            public String getMessage() { return message; }
         }
     }
 }

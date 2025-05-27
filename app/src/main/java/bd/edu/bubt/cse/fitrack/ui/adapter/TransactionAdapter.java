@@ -23,7 +23,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private List<Transaction> transactionList;
     private List<Transaction> allTransactions;
 
-
     public TransactionAdapter(List<Transaction> transactionList) {
         this.transactionList = new ArrayList<>(transactionList);
         this.allTransactions = new ArrayList<>(transactionList);
@@ -44,9 +43,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.tvDate.setText(transaction.getDate().toString());
         holder.tvAmount.setText("$" + transaction.getAmount());
 
-
-        // Change color based on amount
-        if (transaction.getAmount() < 0) {
+        if (transaction.getTransactionType() < 2) {
             holder.tvAmount.setTextColor(holder.itemView.getContext().getResources().getColor(android.R.color.holo_red_dark));
         } else {
             holder.tvAmount.setTextColor(holder.itemView.getContext().getResources().getColor(android.R.color.holo_green_dark));
@@ -82,26 +79,24 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 }
             }
         }
+        notifyItemRangeChanged(0, transactionList.size());
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        transactionList.clear();
+        allTransactions.clear();
+
+        transactionList.addAll(transactions);
+        allTransactions.addAll(transactions);
+
         notifyDataSetChanged();
     }
 
-    // 🔄 Add more transactions for pagination
-    public void addMoreTransactions(List<Transaction> moreTransactions) {
-        int startPos = transactionList.size();
-        transactionList.addAll(moreTransactions);
-        allTransactions.addAll(moreTransactions);
-        notifyItemRangeInserted(startPos, moreTransactions.size());
-    }
-
     public void clear() {
-        int oldSize = transactionList.size();
         transactionList.clear();
         allTransactions.clear();
-        if (oldSize > 0) {
-            notifyItemRangeRemoved(0, oldSize);
-        }
+        notifyDataSetChanged();
     }
-
-
 }
+
 
