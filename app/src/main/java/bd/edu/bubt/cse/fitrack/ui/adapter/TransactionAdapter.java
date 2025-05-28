@@ -44,7 +44,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         Transaction transaction = transactionList.get(position);
         holder.tvTitle.setText(transaction.getDescription());
         holder.tvDate.setText(transaction.getDate().toString());
-        holder.tvAmount.setText("$" + transaction.getAmount());
+        holder.tvAmount.setText("৳" + transaction.getAmount());
         String description = transaction.getDescription();
         holder.tvIcon.setText(description != null && !description.isEmpty() ? description.substring(0, 1).toUpperCase() : "?");
 
