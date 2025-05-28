@@ -1,6 +1,7 @@
 package bd.edu.bubt.cse.fitrack.ui;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -8,27 +9,31 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.edu.bubt.cse.fitrack.R;
-import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
-import bd.edu.bubt.cse.fitrack.ui.adapter.TransactionAdapter;
+import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
+import bd.edu.bubt.cse.fitrack.ui.adapter.CategorySummaryAdapter;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
+import bd.edu.bubt.cse.fitrack.ui.viewmodel.ReportViewModel;
 
 public class DashboardFragment extends Fragment {
 
-    private RecyclerView rvTransactions;
-    private TransactionAdapter transactionAdapter;
-    private List<Transaction> transactionList;
-    private TextView tvBalance, tvExpense;
+    private ReportViewModel viewModel;
+    private RecyclerView rvCategorySummary;
+    private CategorySummaryAdapter adapter;
+    private ProgressBar progressBar;
+    private TextView tvError;
 
     @Nullable
     @Override
@@ -37,30 +42,55 @@ public class DashboardFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        rvTransactions = root.findViewById(R.id.rv_transactions);
-        rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
-        tvBalance = root.findViewById(R.id.tv_balance);
-        tvExpense = root.findViewById(R.id.tv_expenses);
+        // Init ViewModel
+        viewModel = new ViewModelProvider(this).get(ReportViewModel.class);
 
-        // Load Dummy Transactions
-        loadDummyTransactions();
+        // Init UI
+        progressBar = root.findViewById(R.id.progress_bar);
+        tvError = root.findViewById(R.id.tv_error_message);
+        rvCategorySummary = root.findViewById(R.id.rv_category_summary);
 
-        // Placeholder balance and expense values
-        tvBalance.setText("$1200.00");
-        tvExpense.setText("$151.74");
+        rvCategorySummary.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        adapter = new CategorySummaryAdapter(new ArrayList<>());
+        rvCategorySummary.setAdapter(adapter);
+
+        observeViewModel();
 
         return root;
     }
 
-    private void loadDummyTransactions() {
-        transactionList = new ArrayList<>();
-        transactionList.add(new Transaction(1L, 101, "Groceries", 0, "Bought groceries", -45.99, LocalDate.of(2025, 3, 15).toString(), "user@example.com"));
-        transactionList.add(new Transaction(2L, 102, "Income", 1, "Monthly salary", 1200.00, LocalDate.of(2025, 3, 10).toString(), "user@example.com"));
-        transactionList.add(new Transaction(3L, 103, "Utilities", 0, "Paid electric bill", -75.50, LocalDate.of(2025, 3, 8).toString(), "user@example.com"));
-        transactionList.add(new Transaction(4L, 104, "Dining", 0, "Dinner at a restaurant", -30.25, LocalDate.of(2025, 3, 5).toString(), "user@example.com"));
-        transactionList.add(new Transaction(5L, 105, "Freelance", 1, "Freelance project payment", 500.00, LocalDate.of(2025, 3, 2).toString(), "user@example.com"));
+    private void observeViewModel() {
+        viewModel.getReportState().observe(getViewLifecycleOwner(), summaries -> {
+            if (summaries instanceof ReportViewModel.CategorySummaryState.Success) {
+                progressBar.setVisibility(View.GONE);
+                tvError.setVisibility(View.GONE);
+                List<CategorySummary> result = ((ReportViewModel.CategorySummaryState.Success) summaries).getSummaries();
+                if (result != null) {
+                    adapter.setCategoryList(result);
+                }
+            }else if (summaries instanceof ReportViewModel.CategorySummaryState.Error) {
+                progressBar.setVisibility(View.GONE);
+                tvError.setVisibility(View.VISIBLE);
+                tvError.setText("Failed to load category summaries");
+            } else {
+                progressBar.setVisibility(View.VISIBLE);
+                tvError.setVisibility(View.GONE);
+            }
+        });
 
-        transactionAdapter = new TransactionAdapter(transactionList);
-        rvTransactions.setAdapter(transactionAdapter);
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
+            progressBar.setVisibility(loading != null && loading ? View.VISIBLE : View.GONE);
+        });
+
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMsg -> {
+            if (errorMsg != null && !errorMsg.isEmpty()) {
+                tvError.setText(errorMsg);
+                tvError.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            } else {
+                tvError.setVisibility(View.GONE);
+            }
+        });
     }
 }
+

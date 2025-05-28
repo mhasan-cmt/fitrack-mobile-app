@@ -63,4 +63,8 @@ public class RetrofitClient {
     public static CategoryApi getCategoryApi(Context context) {
         return getRetrofitInstance(context).create(CategoryApi.class);
     }
+
+    public static ReportApi getReportApi(Context context) {
+        return getRetrofitInstance(context).create(ReportApi.class);
+    }
 }

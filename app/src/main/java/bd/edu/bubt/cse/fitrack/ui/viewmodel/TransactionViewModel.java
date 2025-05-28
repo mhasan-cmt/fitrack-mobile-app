@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import bd.edu.bubt.cse.fitrack.data.dto.CreateTransactionRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.PaginatedTransactionResponse;
@@ -155,6 +154,7 @@ public class TransactionViewModel extends AndroidViewModel {
             }
         });
     }
+
 
     public static abstract class TransactionState {
         public static class Loading extends TransactionState {}
