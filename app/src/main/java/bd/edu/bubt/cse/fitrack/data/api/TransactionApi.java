@@ -43,6 +43,6 @@ public interface TransactionApi {
     );
 
     @Headers("Content-Type: application/json")
-    @DELETE("transaction/{id}")
-    Call<ApiResponseDto<Void>> deleteTransaction(@Path("id") long id);
+    @DELETE("transaction/delete")
+    Call<ApiResponseDto<String>> deleteTransaction(@Query("transactionId") long id);
 }

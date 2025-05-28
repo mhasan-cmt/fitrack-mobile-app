@@ -140,9 +140,9 @@ public class TransactionViewModel extends AndroidViewModel {
 
     public void deleteTransaction(long id) {
         isLoading.setValue(true);
-        transactionRepository.deleteTransaction(id, new TransactionRepository.TransactionCallback<Void>() {
+        transactionRepository.deleteTransaction(id, new TransactionRepository.TransactionCallback<String>() {
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(String result) {
                 isLoading.postValue(false);
                 transactionState.postValue(new TransactionState.Success());
             }

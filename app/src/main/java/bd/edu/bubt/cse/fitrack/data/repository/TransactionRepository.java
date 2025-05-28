@@ -114,10 +114,10 @@ public class TransactionRepository {
         });
     }
 
-    public void deleteTransaction(long id, TransactionCallback<Void> callback) {
-        transactionApi.deleteTransaction(id).enqueue(new Callback<ApiResponseDto<Void>>() {
+    public void deleteTransaction(long id, TransactionCallback<String> callback) {
+        transactionApi.deleteTransaction(id).enqueue(new Callback<ApiResponseDto<String>>() {
             @Override
-            public void onResponse(Call<ApiResponseDto<Void>> call, Response<ApiResponseDto<Void>> response) {
+            public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                 if (response.isSuccessful()) {
                     callback.onSuccess(null);
                 } else {
@@ -126,7 +126,7 @@ public class TransactionRepository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponseDto<Void>> call, Throwable t) {
+            public void onFailure(Call<ApiResponseDto<String>> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });
