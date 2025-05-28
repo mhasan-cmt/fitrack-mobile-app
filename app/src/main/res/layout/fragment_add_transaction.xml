@@ -18,35 +18,13 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <TextView
+        <ProgressBar
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Transaction Type"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
 
-        <RadioGroup
-            android:id="@+id/rg_transaction_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/rb_expense"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:checked="true"
-                android:text="Expense" />
-
-            <RadioButton
-                android:id="@+id/rb_income"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Income" />
-        </RadioGroup>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

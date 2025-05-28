@@ -3,6 +3,7 @@ package bd.edu.bubt.cse.fitrack.data.api;
 import java.util.List;
 
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
+import bd.edu.bubt.cse.fitrack.data.dto.CreateTransactionRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.TransactionResponseWrapper;
 import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
 import retrofit2.Call;
@@ -24,12 +25,11 @@ public interface TransactionApi {
             @Query("searchKey") String searchKey,
             @Query("sortField") String sortField,
             @Query("sortDirec") String sortDirec,
-            @Query("email") String userEmail,
             @Query("transactionType") String transactionType
     );
     @Headers("Content-Type: application/json")
-    @POST("transaction")
-    Call<ApiResponseDto<Transaction>> createTransaction(@Body Transaction transaction);
+    @POST("transaction/new")
+    Call<ApiResponseDto<String>> createTransaction(@Body CreateTransactionRequest transaction);
 
     @Headers("Content-Type: application/json")
     @GET("transaction/{id}")

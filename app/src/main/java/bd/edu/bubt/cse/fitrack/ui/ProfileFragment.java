@@ -74,8 +74,6 @@ public class ProfileFragment extends Fragment {
                 binding.tvGender.setText(profile.getGender());
                 binding.tvDateOfBirth.setText(profile.getDateOfBirth());
                 binding.tvAddress.setText(profile.getAddress());
-                binding.tvRoles.setText(profile.getRoles() != null ? android.text.TextUtils.join(", ",
-                    profile.getRoles().stream().map(ProfileResponse.Role::getName).toArray(String[]::new)) : "N/A");
 
             } else if (profileState instanceof ProfileViewModel.ProfileState.Error) {
                 ProfileViewModel.ProfileState.Error error = (ProfileViewModel.ProfileState.Error) profileState;

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import bd.edu.bubt.cse.fitrack.data.dto.CreateTransactionRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.PaginatedTransactionResponse;
 import bd.edu.bubt.cse.fitrack.data.repository.TransactionRepository;
 import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
@@ -53,10 +54,10 @@ public class TransactionViewModel extends AndroidViewModel {
         return totalPages;
     }
 
-    public void loadTransactions(int page, int size, String searchKey, String sortField, String sortDirec, String userEmail, String transactionType) {
+    public void loadTransactions(int page, int size, String searchKey, String sortField, String sortDirec, String transactionType) {
         isLoading.setValue(true);
         transactionRepository.getAllTransactions(
-                page, size, searchKey, sortField, sortDirec, userEmail, transactionType,
+                page, size, searchKey, sortField, sortDirec, transactionType,
                 new TransactionRepository.TransactionCallback<PaginatedTransactionResponse>() {
                     @Override
                     public void onSuccess(PaginatedTransactionResponse response) {
@@ -101,13 +102,12 @@ public class TransactionViewModel extends AndroidViewModel {
         });
     }
 
-    public void createTransaction(Transaction transaction) {
+    public void createTransaction(CreateTransactionRequest transaction) {
         isLoading.setValue(true);
-        transactionRepository.createTransaction(transaction, new TransactionRepository.TransactionCallback<Transaction>() {
+        transactionRepository.createTransaction(transaction, new TransactionRepository.TransactionCallback<String>() {
             @Override
-            public void onSuccess(Transaction result) {
+            public void onSuccess(String result) {
                 isLoading.postValue(false);
-                selectedTransaction.postValue(result);
                 transactionState.postValue(new TransactionState.Success());
             }
 

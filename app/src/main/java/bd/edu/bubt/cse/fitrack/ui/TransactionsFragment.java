@@ -227,9 +227,8 @@ public class TransactionsFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
         String sortDirection = isAscending ? "asc" : "desc";
-        String userEmail = TokenManager.getInstance(requireContext()).getEmail();
 
-        viewModel.loadTransactions(page, pageSize, currentSearchQuery, currentSortField, sortDirection, userEmail, transactionType);
+        viewModel.loadTransactions(page, pageSize, currentSearchQuery, currentSortField, sortDirection, transactionType);
     }
 }
 

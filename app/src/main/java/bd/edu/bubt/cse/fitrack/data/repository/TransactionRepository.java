@@ -8,6 +8,7 @@ import java.util.Map;
 import bd.edu.bubt.cse.fitrack.data.api.RetrofitClient;
 import bd.edu.bubt.cse.fitrack.data.api.TransactionApi;
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
+import bd.edu.bubt.cse.fitrack.data.dto.CreateTransactionRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.PaginatedTransactionResponse;
 import bd.edu.bubt.cse.fitrack.data.dto.TransactionResponseWrapper;
 import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
@@ -28,11 +29,10 @@ public class TransactionRepository {
             String searchKey,
             String sortField,
             String sortDirec,
-            String userEmail,
             String transactionType,
             TransactionCallback<PaginatedTransactionResponse> callback
     ) {
-        transactionApi.getAllTransactions(page, size, searchKey, sortField, sortDirec, userEmail, transactionType)
+        transactionApi.getAllTransactions(page, size, searchKey, sortField, sortDirec, transactionType)
                 .enqueue(new Callback<ApiResponseDto<TransactionResponseWrapper>>() {
                     @Override
                     public void onResponse(Call<ApiResponseDto<TransactionResponseWrapper>> call, Response<ApiResponseDto<TransactionResponseWrapper>> response) {
@@ -78,10 +78,10 @@ public class TransactionRepository {
         });
     }
 
-    public void createTransaction(Transaction transaction, TransactionCallback<Transaction> callback) {
-        transactionApi.createTransaction(transaction).enqueue(new Callback<ApiResponseDto<Transaction>>() {
+    public void createTransaction(CreateTransactionRequest transaction, TransactionCallback<String> callback) {
+        transactionApi.createTransaction(transaction).enqueue(new Callback<ApiResponseDto<String>>() {
             @Override
-            public void onResponse(Call<ApiResponseDto<Transaction>> call, Response<ApiResponseDto<Transaction>> response) {
+            public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body().getResponse());
                 } else {
@@ -90,7 +90,7 @@ public class TransactionRepository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponseDto<Transaction>> call, Throwable t) {
+            public void onFailure(Call<ApiResponseDto<String>> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });
