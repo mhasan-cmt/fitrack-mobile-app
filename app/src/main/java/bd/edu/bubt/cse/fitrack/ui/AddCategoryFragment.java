@@ -2,6 +2,7 @@ package bd.edu.bubt.cse.fitrack.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -9,6 +10,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -44,13 +47,21 @@ public class AddCategoryFragment extends Fragment {
         rbIncome = root.findViewById(R.id.rb_income);
         btnSaveCategory = root.findViewById(R.id.btn_save_category);
 
-        // Initialize ViewModel
-        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        Toolbar toolbar = root.findViewById(R.id.toolbar);
 
-        // Observe ViewModel LiveData
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
+        activity.setSupportActionBar(toolbar);
+
+        if (activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            activity.getSupportActionBar().setTitle("Add Category");
+        }
+
+        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        setHasOptionsMenu(true);;
+
         observeViewModel();
 
-        // Set up click listener for save button
         btnSaveCategory.setOnClickListener(v -> saveCategory());
 
         return root;
@@ -98,5 +109,14 @@ public class AddCategoryFragment extends Fragment {
         CreateCategoryRequest category = new CreateCategoryRequest(name, t, Math.toIntExact(TokenManager.getInstance(requireContext()).getUserID()));
 
         categoryViewModel.addCategory(category);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getParentFragmentManager().popBackStack();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

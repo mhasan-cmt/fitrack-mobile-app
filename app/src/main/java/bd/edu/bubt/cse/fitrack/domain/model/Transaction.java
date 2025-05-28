@@ -1,5 +1,6 @@
 package bd.edu.bubt.cse.fitrack.domain.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Transaction {
+public class Transaction implements Serializable {
     private Long transactionId;
 
     private int categoryId;

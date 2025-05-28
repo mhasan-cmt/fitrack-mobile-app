@@ -1,6 +1,7 @@
 package bd.edu.bubt.cse.fitrack.ui.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.domain.model.Transaction;
+import bd.edu.bubt.cse.fitrack.ui.TransactionDetail;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
@@ -44,6 +46,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.tvAmount.setText("$" + transaction.getAmount());
         String description = transaction.getDescription();
         holder.tvIcon.setText(description != null && !description.isEmpty() ? description.substring(0, 1).toUpperCase() : "?");
+
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), TransactionDetail.class);
+            intent.putExtra(TransactionDetail.EXTRA_TRANSACTION, transaction);
+            view.getContext().startActivity(intent);
+        });
 
 
         if (transaction.getTransactionType() < 2) {

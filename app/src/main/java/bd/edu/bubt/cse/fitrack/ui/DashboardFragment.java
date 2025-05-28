@@ -8,9 +8,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.w3c.dom.Text;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public class DashboardFragment extends Fragment {
     private RecyclerView rvTransactions;
     private TransactionAdapter transactionAdapter;
     private List<Transaction> transactionList;
+    private TextView tvBalance, tvExpense;
 
     @Nullable
     @Override
@@ -35,9 +39,15 @@ public class DashboardFragment extends Fragment {
 
         rvTransactions = root.findViewById(R.id.rv_transactions);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
+        tvBalance = root.findViewById(R.id.tv_balance);
+        tvExpense = root.findViewById(R.id.tv_expenses);
 
         // Load Dummy Transactions
         loadDummyTransactions();
+
+        // Placeholder balance and expense values
+        tvBalance.setText("$1200.00");
+        tvExpense.setText("$151.74");
 
         return root;
     }

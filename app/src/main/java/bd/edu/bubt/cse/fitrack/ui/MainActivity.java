@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActivityMainBinding binding;
     private DrawerLayout drawerLayout;
     private TextView tvUserEmail;
-    private TextView tvBalance;
-    private TextView tvExpense;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         tvUserEmail = headerView.findViewById(R.id.user_email);
-        tvBalance = binding.tvBalance;
-        tvExpense = binding.tvExpenses;
-
-        // Placeholder balance and expense values
-        tvBalance.setText("$1200.00");
-        tvExpense.setText("$151.74");
     }
 
     @Override
