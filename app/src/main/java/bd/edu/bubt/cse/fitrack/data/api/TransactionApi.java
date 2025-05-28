@@ -36,9 +36,9 @@ public interface TransactionApi {
     Call<ApiResponseDto<Transaction>> getTransactionById(@Path("id") long id);
 
     @Headers("Content-Type: application/json")
-    @PUT("transaction/update/{id}")
+    @PUT("transaction/update")
     Call<ApiResponseDto<String>> updateTransaction(
-            @Path("transactionId") long id,
+            @Query("transactionId") long id,
             @Body CreateTransactionRequest transaction
     );
 

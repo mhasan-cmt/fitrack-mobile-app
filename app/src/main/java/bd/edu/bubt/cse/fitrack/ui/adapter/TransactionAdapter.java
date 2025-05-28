@@ -24,6 +24,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private List<Transaction> transactionList;
     private List<Transaction> allTransactions;
+    private OnTransactionClickListener listener;
 
     public TransactionAdapter(List<Transaction> transactionList) {
         this.transactionList = new ArrayList<>(transactionList);
@@ -47,10 +48,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         String description = transaction.getDescription();
         holder.tvIcon.setText(description != null && !description.isEmpty() ? description.substring(0, 1).toUpperCase() : "?");
 
-        holder.itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), TransactionDetail.class);
-            intent.putExtra(TransactionDetail.EXTRA_TRANSACTION, transaction);
-            view.getContext().startActivity(intent);
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onTransactionClick(transaction);
+            }
         });
 
 
@@ -108,6 +109,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         transactionList.clear();
         allTransactions.clear();
         notifyDataSetChanged();
+    }
+
+    public interface OnTransactionClickListener {
+        void onTransactionClick(Transaction transaction);
+    }
+
+    public void setOnTransactionClickListener(OnTransactionClickListener listener) {
+        this.listener = listener;
     }
 }
 

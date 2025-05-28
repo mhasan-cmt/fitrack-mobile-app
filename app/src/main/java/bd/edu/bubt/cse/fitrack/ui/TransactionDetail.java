@@ -16,6 +16,7 @@ import bd.edu.bubt.cse.fitrack.ui.viewmodel.TransactionViewModel;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class TransactionDetail extends AppCompatActivity {
     private Transaction transaction;
 
     private TransactionViewModel transactionViewModel;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,11 @@ public class TransactionDetail extends AppCompatActivity {
         btnDelete = findViewById(R.id.btn_delete);
         btnSelectDate = findViewById(R.id.btn_select_date);
         btnSelectCategory = findViewById(R.id.btn_select_category);
+
+        progressBar = new android.widget.ProgressBar(this, null, android.R.attr.progressBarStyleLarge);
+        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(android.view.View.GONE);
+        ((android.widget.LinearLayout) findViewById(android.R.id.content).getRootView().findViewById(R.id.toolbar).getParent()).addView(progressBar);
 
         // Get transaction
         transaction = (Transaction) getIntent().getSerializableExtra(EXTRA_TRANSACTION);
@@ -89,6 +96,8 @@ public class TransactionDetail extends AppCompatActivity {
         btnDelete.setOnClickListener(v -> {
             deleteTransaction();
         });
+
+        observe();
     }
 
     private void updateTransaction(Long transactionId) {
@@ -114,16 +123,32 @@ public class TransactionDetail extends AppCompatActivity {
 
         transactionViewModel.updateTransaction(transactionId, updateRequest);
 
-
-        // TODO: Update transaction in Room or send API call to backend
-        Toast.makeText(this, "Transaction updated", Toast.LENGTH_SHORT).show();
-        finish();
     }
 
     private void deleteTransaction() {
         // TODO: Delete transaction from Room or backend API
         Toast.makeText(this, "Transaction deleted", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    private void observe(){
+        transactionViewModel.getIsLoading().observe(this, isLoading -> {
+            if (isLoading != null && isLoading) {
+                progressBar.setVisibility(android.view.View.VISIBLE);
+            } else {
+                progressBar.setVisibility(android.view.View.GONE);
+            }
+        });
+        transactionViewModel.getTransactionState().observe(this, state -> {
+            if (state instanceof TransactionViewModel.TransactionState.Success) {
+                Toast.makeText(this, "Transaction updated", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
+            } else if (state instanceof TransactionViewModel.TransactionState.Error) {
+                String msg = ((TransactionViewModel.TransactionState.Error) state).getMessage();
+                Toast.makeText(this, "Update failed: " + msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

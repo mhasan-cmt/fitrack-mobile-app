@@ -1,5 +1,7 @@
 package bd.edu.bubt.cse.fitrack.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -52,6 +56,8 @@ public class TransactionsFragment extends Fragment {
 
     private TransactionViewModel viewModel;
 
+    private ActivityResultLauncher<Intent> transactionDetailLauncher;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_transactions, container, false);
@@ -81,6 +87,10 @@ public class TransactionsFragment extends Fragment {
 
         observeViewModel();
         loadPage(0);
+
+
+        setupTransactionDetailLauncher();
+        setupAdapterClickListener();
 
         return root;
     }
@@ -228,6 +238,24 @@ public class TransactionsFragment extends Fragment {
         String sortDirection = isAscending ? "asc" : "desc";
 
         viewModel.loadTransactions(page, pageSize, currentSearchQuery, currentSortField, sortDirection, transactionType);
+    }
+    private void setupTransactionDetailLauncher() {
+        transactionDetailLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        loadPage(currentPage);
+                    }
+                }
+        );
+    }
+
+    private void setupAdapterClickListener() {
+        transactionAdapter.setOnTransactionClickListener(transaction -> {
+            Intent intent = new Intent(requireContext(), TransactionDetail.class);
+            intent.putExtra(TransactionDetail.EXTRA_TRANSACTION, transaction);
+            transactionDetailLauncher.launch(intent);
+        });
     }
 }
 
