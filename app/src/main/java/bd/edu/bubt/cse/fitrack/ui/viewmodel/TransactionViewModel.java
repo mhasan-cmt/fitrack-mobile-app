@@ -120,13 +120,12 @@ public class TransactionViewModel extends AndroidViewModel {
         });
     }
 
-    public void updateTransaction(long id, Transaction transaction) {
+    public void updateTransaction(long id, CreateTransactionRequest transaction) {
         isLoading.setValue(true);
-        transactionRepository.updateTransaction(id, transaction, new TransactionRepository.TransactionCallback<Transaction>() {
+        transactionRepository.updateTransaction(id, transaction, new TransactionRepository.TransactionCallback<String>() {
             @Override
-            public void onSuccess(Transaction result) {
+            public void onSuccess(String result) {
                 isLoading.postValue(false);
-                selectedTransaction.postValue(result);
                 transactionState.postValue(new TransactionState.Success());
             }
 

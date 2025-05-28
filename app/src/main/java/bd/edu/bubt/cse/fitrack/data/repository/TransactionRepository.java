@@ -96,10 +96,10 @@ public class TransactionRepository {
         });
     }
 
-    public void updateTransaction(long id, Transaction transaction, TransactionCallback<Transaction> callback) {
-        transactionApi.updateTransaction(id, transaction).enqueue(new Callback<ApiResponseDto<Transaction>>() {
+    public void updateTransaction(long id, CreateTransactionRequest transaction, TransactionCallback<String> callback) {
+        transactionApi.updateTransaction(id, transaction).enqueue(new Callback<ApiResponseDto<String>>() {
             @Override
-            public void onResponse(Call<ApiResponseDto<Transaction>> call, Response<ApiResponseDto<Transaction>> response) {
+            public void onResponse(Call<ApiResponseDto<String>> call, Response<ApiResponseDto<String>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body().getResponse());
                 } else {
@@ -108,7 +108,7 @@ public class TransactionRepository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponseDto<Transaction>> call, Throwable t) {
+            public void onFailure(Call<ApiResponseDto<String>> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });
