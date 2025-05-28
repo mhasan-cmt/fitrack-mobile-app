@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
 import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
 import bd.edu.bubt.cse.fitrack.data.repository.AuthRepository;
 

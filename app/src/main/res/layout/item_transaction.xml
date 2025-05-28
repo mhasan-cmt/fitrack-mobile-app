@@ -2,34 +2,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="12dp"
+    android:gravity="center_vertical">
 
+    <!-- Circular Icon with First Letter -->
     <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="Title"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:id="@+id/tv_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_circle"
+        android:gravity="center"
+        android:text="T"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginEnd="12dp" />
 
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Date"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/tv_amount"
+    <!-- Transaction Info Vertical Stack -->
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="$0.00"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:orientation="vertical">
+
+        <!-- Amount -->
+        <TextView
+            android:id="@+id/tv_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$0.00"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="14sp"
+            android:textColor="@android:color/black" />
+
+        <!-- Date -->
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray" />
+    </LinearLayout>
 </LinearLayout>

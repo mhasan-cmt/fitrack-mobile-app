@@ -42,6 +42,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.tvTitle.setText(transaction.getDescription());
         holder.tvDate.setText(transaction.getDate().toString());
         holder.tvAmount.setText("$" + transaction.getAmount());
+        String description = transaction.getDescription();
+        holder.tvIcon.setText(description != null && !description.isEmpty() ? description.substring(0, 1).toUpperCase() : "?");
+
 
         if (transaction.getTransactionType() < 2) {
             holder.tvAmount.setTextColor(holder.itemView.getContext().getResources().getColor(android.R.color.holo_red_dark));
@@ -56,13 +59,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDate, tvAmount;
+        TextView tvTitle, tvDate, tvAmount, tvIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvDate = itemView.findViewById(R.id.tv_date);
             tvAmount = itemView.findViewById(R.id.tv_amount);
+            tvIcon = itemView.findViewById(R.id.tv_icon);
         }
     }
 
