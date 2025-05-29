@@ -6,6 +6,7 @@ import bd.edu.bubt.cse.fitrack.data.dto.LoginResponse;
 import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
 import bd.edu.bubt.cse.fitrack.data.dto.RegisterRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.ResetPasswordRequestDto;
+import bd.edu.bubt.cse.fitrack.data.dto.UpdateProfileRequest;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.LoginViewModel;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
 import retrofit2.Call;
@@ -13,6 +14,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface AuthApi {
@@ -52,4 +54,7 @@ public interface AuthApi {
     @Headers("Content-Type: application/json")
     @GET("user/get")
     Call<ApiResponseDto<ProfileResponse>> getUserProfileData(@Query("username") String username);
+    @Headers("Content-Type: application/json")
+    @PUT("user/update")
+    Call<ApiResponseDto<ProfileResponse>> updateUserProfile(@Body UpdateProfileRequest updateProfileRequest);
 }

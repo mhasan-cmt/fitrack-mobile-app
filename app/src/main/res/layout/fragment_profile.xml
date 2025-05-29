@@ -22,83 +22,94 @@
             android:layout_marginBottom="16dp"
             android:text="mahmud.fitrack" />
 
+        <!-- First Name -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="First Name"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_first_name"
+        <EditText
+            android:id="@+id/et_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Mahmudul Hasan" />
+            android:inputType="textPersonName"
+            android:hint="First Name" />
 
+        <!-- Last Name -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Last Name"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_last_name"
+        <EditText
+            android:id="@+id/et_last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Shafin" />
+            android:inputType="textPersonName"
+            android:hint="Last Name" />
 
+        <!-- Phone -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Phone"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_phone"
+        <EditText
+            android:id="@+id/et_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="+880187596178" />
+            android:inputType="phone"
+            android:hint="Phone Number" />
 
+        <!-- Gender -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Gender"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_gender"
+        <Spinner
+            android:id="@+id/spinner_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Male" />
+            android:layout_marginBottom="16dp" />
 
+        <!-- Date of Birth -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Date of Birth"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_date_of_birth"
+        <EditText
+            android:id="@+id/et_date_of_birth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="1990-01-01" />
+            android:focusable="false"
+            android:clickable="true"
+            android:hint="YYYY-MM-DD" />
 
+        <!-- Address -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_address"
+        <EditText
+            android:id="@+id/et_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Mirpur 6, Dhaka 121" />
+            android:inputType="textPostalAddress"
+            android:hint="Address" />
 
         <TextView
             android:layout_width="wrap_content"

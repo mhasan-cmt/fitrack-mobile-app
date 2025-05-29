@@ -6,20 +6,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
+import bd.edu.bubt.cse.fitrack.data.dto.UpdateProfileRequest;
 import bd.edu.bubt.cse.fitrack.databinding.FragmentProfileBinding;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
 
 public class ProfileFragment extends Fragment {
-
     private FragmentProfileBinding binding;
     private ProfileViewModel profileViewModel;
+    private ArrayAdapter<CharSequence> genderAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,6 +31,8 @@ public class ProfileFragment extends Fragment {
         View root = binding.getRoot();
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
+        setupGenderSpinner();
 
         observeViewModel();
 
@@ -37,15 +43,41 @@ public class ProfileFragment extends Fragment {
             profileViewModel.getUserProfileData(username);
         }
 
-        binding.btnEditProfile.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Edit profile", Toast.LENGTH_SHORT).show()
-        );
+        binding.btnEditProfile.setOnClickListener(v -> {
+            String firstName = binding.etFirstName.getText().toString().trim();
+            String lastName = binding.etLastName.getText().toString().trim();
+            String phone = binding.etPhone.getText().toString().trim();
+            String gender = binding.spinnerGender.getSelectedItem().toString();
+            String dateOfBirth = binding.etDateOfBirth.getText().toString().trim();
+            String address = binding.etAddress.getText().toString().trim();
+
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(
+                    firstName,
+                    lastName,
+                    phone,
+                    gender,
+                    dateOfBirth,
+                    address
+            );
+
+            profileViewModel.updateUserProfile(
+                    updateProfileRequest
+            );
+        });
 
         binding.btnChangePassword.setOnClickListener(v ->
                 Toast.makeText(getContext(), "Change password", Toast.LENGTH_SHORT).show()
         );
 
         return root;
+    }
+
+    private void setupGenderSpinner() {
+        // Setup spinner with gender options - you can customize as needed
+        genderAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.gender_options, android.R.layout.simple_spinner_item);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerGender.setAdapter(genderAdapter);
     }
 
     private void observeViewModel() {
@@ -68,12 +100,14 @@ public class ProfileFragment extends Fragment {
 
                 binding.tvUsername.setText(profile.getUsername());
                 binding.tvEmail.setText(profile.getEmail());
-                binding.tvFirstName.setText(profile.getFirstName());
-                binding.tvLastName.setText(profile.getLastName());
-                binding.tvPhone.setText(profile.getPhone());
-                binding.tvGender.setText(profile.getGender());
-                binding.tvDateOfBirth.setText(profile.getDateOfBirth());
-                binding.tvAddress.setText(profile.getAddress());
+                binding.etFirstName.setText(profile.getFirstName());
+                binding.etLastName.setText(profile.getLastName());
+                binding.etPhone.setText(profile.getPhone());
+
+                setSpinnerSelection(binding.spinnerGender, profile.getGender());
+
+                binding.etDateOfBirth.setText(profile.getDateOfBirth());
+                binding.etAddress.setText(profile.getAddress());
 
             } else if (profileState instanceof ProfileViewModel.ProfileState.Error) {
                 ProfileViewModel.ProfileState.Error error = (ProfileViewModel.ProfileState.Error) profileState;
@@ -82,10 +116,21 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    private void setSpinnerSelection(Spinner spinner, String value) {
+        if (value == null) return;
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (value.equalsIgnoreCase(spinner.getItemAtPosition(i).toString())) {
+                spinner.setSelection(i);
+                break;
+            }
+        }
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 }
+
 

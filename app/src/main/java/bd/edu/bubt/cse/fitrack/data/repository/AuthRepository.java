@@ -12,6 +12,7 @@ import bd.edu.bubt.cse.fitrack.data.dto.LoginResponse;
 import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
 import bd.edu.bubt.cse.fitrack.data.dto.RegisterRequest;
 import bd.edu.bubt.cse.fitrack.data.dto.ResetPasswordRequestDto;
+import bd.edu.bubt.cse.fitrack.data.dto.UpdateProfileRequest;
 import bd.edu.bubt.cse.fitrack.data.local.TokenManager;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.LoginViewModel;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.ProfileViewModel;
@@ -326,6 +327,39 @@ public class AuthRepository {
                 } else {
                     String errorMsg = "Failed to fetch user profile data";
                     if (response.code() == 404) {
+                        errorMsg = "User not found";
+                    } else if (response.code() >= 500) {
+                        errorMsg = "Server error. Please try again later.";
+                    } else if (response.body() != null) {
+                        errorMsg = "Something went wrong";
+                    }
+                    authCallback.onError(errorMsg);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseDto<ProfileResponse>> call, Throwable t) {
+                authCallback.onError("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void updateUserProfile(UpdateProfileRequest updateProfileRequest, AuthCallback<ProfileResponse> authCallback) {
+        if (!isNetworkAvailable()) {
+            authCallback.onError("No internet connection. Please check your network settings.");
+            return;
+        }
+
+        authApi.updateUserProfile(updateProfileRequest).enqueue(new Callback<ApiResponseDto<ProfileResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponseDto<ProfileResponse>> call, Response<ApiResponseDto<ProfileResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    authCallback.onSuccess(response.body().getResponse());
+                } else {
+                    String errorMsg = "Failed to update profile";
+                    if (response.code() == 400) {
+                        errorMsg = "Invalid profile data";
+                    } else if (response.code() == 404) {
                         errorMsg = "User not found";
                     } else if (response.code() >= 500) {
                         errorMsg = "Server error. Please try again later.";

@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import bd.edu.bubt.cse.fitrack.data.dto.ProfileResponse;
+import bd.edu.bubt.cse.fitrack.data.dto.UpdateProfileRequest;
 import bd.edu.bubt.cse.fitrack.data.repository.AuthRepository;
 
 public class ProfileViewModel extends AndroidViewModel {
@@ -37,6 +38,25 @@ public class ProfileViewModel extends AndroidViewModel {
         isLoading.setValue(true);
 
         authRepository.getUserProfileData(username, new AuthRepository.AuthCallback<ProfileResponse>() {
+            @Override
+            public void onSuccess(ProfileResponse result) {
+                isLoading.postValue(false);
+                profileState.postValue(new ProfileState.Success(result));
+            }
+
+            @Override
+            public void onError(String errorMsg) {
+                isLoading.postValue(false);
+                errorMessage.postValue(errorMsg);
+                profileState.postValue(new ProfileState.Error(errorMsg));
+            }
+        });
+    }
+
+    public void updateUserProfile(UpdateProfileRequest updateProfileRequest) {
+        isLoading.setValue(true);
+
+        authRepository.updateUserProfile(updateProfileRequest, new AuthRepository.AuthCallback<ProfileResponse>() {
             @Override
             public void onSuccess(ProfileResponse result) {
                 isLoading.postValue(false);
