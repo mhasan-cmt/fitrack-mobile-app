@@ -39,10 +39,10 @@ public class ReportRepository {
         });
     }
 
-    public void getTotalIncomeOrExpense(int transactionType, int month, int year, ReportCallback<List<Double>> callback) {
+    public void getTotalIncomeOrExpense(int transactionType, int month, int year, ReportCallback<Double> callback) {
         reportApi.getTotalIncomeOrExpense(transactionType, month, year).enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<ApiResponseDto<List<Double>>> call, @NonNull Response<ApiResponseDto<List<Double>>> response) {
+            public void onResponse(@NonNull Call<ApiResponseDto<Double>> call, @NonNull Response<ApiResponseDto<Double>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body().getResponse());
                 } else {
@@ -51,7 +51,7 @@ public class ReportRepository {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ApiResponseDto<List<Double>>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<ApiResponseDto<Double>> call, @NonNull Throwable t) {
                 callback.onError("Network error: " + t.getMessage());
             }
         });
@@ -59,6 +59,7 @@ public class ReportRepository {
 
     public interface ReportCallback<T> {
         void onSuccess(T result);
+
         void onError(String errorMessage);
     }
 }

@@ -20,6 +20,8 @@ public class ReportViewModel extends AndroidViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<CategorySummaryState> reportState = new MutableLiveData<>();
+    private final MutableLiveData<IncomeState> incomeStateMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ExpenseState> expenseStateMutableLiveData = new MutableLiveData<>();
 
     public ReportViewModel(@NonNull Application application) {
         super(application);
@@ -49,14 +51,14 @@ public class ReportViewModel extends AndroidViewModel {
 
     public void getTotalIncome(int month, int year) {
         isLoading.setValue(true);
-        repository.getTotalIncomeOrExpense(1, month, year, new ReportRepository.ReportCallback<List<Double>>() {
+        repository.getTotalIncomeOrExpense(1, month, year, new ReportRepository.ReportCallback<Double>() {
             @Override
-            public void onSuccess(List<Double> result) {
+            public void onSuccess(Double result) {
                 isLoading.postValue(false);
-                if (!result.isEmpty()) {
-                    getTotalIncome.postValue(result.get(0));
+                if (result != null) {
+                    incomeStateMutableLiveData.postValue(new IncomeState.Success(result));
                 } else {
-                    getTotalIncome.postValue(0.0);
+                    incomeStateMutableLiveData.postValue(new IncomeState.Success(0.0));
                 }
             }
 
@@ -70,14 +72,14 @@ public class ReportViewModel extends AndroidViewModel {
 
     public void getTotalExpense(int month, int year) {
         isLoading.setValue(true);
-        repository.getTotalIncomeOrExpense(2, month, year, new ReportRepository.ReportCallback<List<Double>>() {
+        repository.getTotalIncomeOrExpense(2, month, year, new ReportRepository.ReportCallback<Double>() {
             @Override
-            public void onSuccess(List<Double> result) {
+            public void onSuccess(Double result) {
                 isLoading.postValue(false);
-                if (!result.isEmpty()) {
-                    getTotalExpense.postValue(result.get(0));
+                if (result!=null) {
+                    expenseStateMutableLiveData.postValue(new ExpenseState.Success(result));
                 } else {
-                    getTotalExpense.postValue(0.0);
+                    expenseStateMutableLiveData.postValue(new ExpenseState.Success(0.0));
                 }
             }
 
@@ -107,6 +109,14 @@ public class ReportViewModel extends AndroidViewModel {
 
     public LiveData<CategorySummaryState> getReportState() {
         return reportState;
+    }
+
+    public LiveData<IncomeState> getIncomeState() {
+        return incomeStateMutableLiveData;
+    }
+
+    public LiveData<ExpenseState> getExpenseState() {
+        return expenseStateMutableLiveData;
     }
 
     // UI State representation
@@ -140,10 +150,10 @@ public class ReportViewModel extends AndroidViewModel {
     }
 
     public static abstract class IncomeState {
-        public static class Loading extends CategorySummaryState {
+        public static class Loading extends IncomeState {
         }
 
-        public static class Success extends CategorySummaryState {
+        public static class Success extends IncomeState {
             private final double income;
 
             public Success(double income) {
@@ -155,7 +165,7 @@ public class ReportViewModel extends AndroidViewModel {
             }
         }
 
-        public static class Error extends CategorySummaryState {
+        public static class Error extends IncomeState {
             private final String message;
 
             public Error(String message) {
@@ -169,10 +179,10 @@ public class ReportViewModel extends AndroidViewModel {
     }
 
     public static abstract class ExpenseState {
-        public static class Loading extends CategorySummaryState {
+        public static class Loading extends ExpenseState {
         }
 
-        public static class Success extends CategorySummaryState {
+        public static class Success extends ExpenseState {
             private final double expense;
 
             public Success(double expense) {
@@ -184,7 +194,7 @@ public class ReportViewModel extends AndroidViewModel {
             }
         }
 
-        public static class Error extends CategorySummaryState {
+        public static class Error extends ExpenseState {
             private final String message;
 
             public Error(String message) {

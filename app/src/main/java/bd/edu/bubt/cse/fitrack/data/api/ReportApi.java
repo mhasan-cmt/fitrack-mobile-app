@@ -18,7 +18,7 @@ public interface ReportApi {
 
     @Headers("Content-Type: application/json")
     @GET("report/getTotalIncomeOrExpense")
-    Call<ApiResponseDto<List<Double>>> getTotalIncomeOrExpense(@Query("transactionTypeId") int transactionType,
-                                                                        @Query("month") int month,
-                                                                        @Query("year") int year);
+    Call<ApiResponseDto<Double>> getTotalIncomeOrExpense(@Query("transactionTypeId") int transactionType,
+                                                         @Query("month") int month,
+                                                         @Query("year") int year);
 }
