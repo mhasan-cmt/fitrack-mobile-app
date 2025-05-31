@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository;
@@ -15,82 +16,89 @@ import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository;
 public class ReportViewModel extends AndroidViewModel {
 
     private final ReportRepository repository;
-    private final MutableLiveData<Double> getTotalIncome = new MutableLiveData<>();
-    private final MutableLiveData<Double> getTotalExpense = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<CategorySummaryState> reportState = new MutableLiveData<>();
-    private final MutableLiveData<IncomeState> incomeStateMutableLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ExpenseState> expenseStateMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<IncomeState> incomeState = new MutableLiveData<>();
+    private final MutableLiveData<ExpenseState> expenseState = new MutableLiveData<>();
+    private final MutableLiveData<CombinedFinanceState> combinedState = new MutableLiveData<>();
 
     public ReportViewModel(@NonNull Application application) {
         super(application);
         this.repository = new ReportRepository(application);
+        loadInitialData();
+    }
+
+    private void loadInitialData() {
         loadCategorySummaries();
     }
 
-    private void loadCategorySummaries() {
+    // Generic repository call executor
+    private <T> void executeRepositoryCall(
+            RepositoryCall<T> call,
+            Consumer<T> onSuccess,
+            Consumer<String> onError
+    ) {
         isLoading.setValue(true);
-        reportState.setValue(new CategorySummaryState.Loading());
-
-        repository.getMonthlySummaryByCategory(new ReportRepository.ReportCallback<List<CategorySummary>>() {
+        call.execute(new ReportRepository.ReportCallback<T>() {
             @Override
-            public void onSuccess(List<CategorySummary> result) {
+            public void onSuccess(T result) {
                 isLoading.postValue(false);
-                reportState.postValue(new CategorySummaryState.Success(result));
+                onSuccess.accept(result);
             }
 
             @Override
             public void onError(String errorMsg) {
                 isLoading.postValue(false);
                 errorMessage.postValue(errorMsg);
-                reportState.postValue(new CategorySummaryState.Error(errorMsg));
+                if (onError != null) {
+                    onError.accept(errorMsg);
+                }
             }
         });
+    }
+
+    // Type-specific executor for Double results
+    private void executeDoubleRepositoryCall(
+            RepositoryCall<Double> call,
+            Consumer<Double> onSuccess,
+            Consumer<String> onError
+    ) {
+        executeRepositoryCall(call, onSuccess, onError);
+    }
+
+    public void loadCategorySummaries() {
+        executeRepositoryCall(
+                repository::getMonthlySummaryByCategory,
+                result -> reportState.postValue(new CategorySummaryState.Success(result)),
+                error -> reportState.postValue(new CategorySummaryState.Error(error))
+        );
     }
 
     public void getTotalIncome(int month, int year) {
-        isLoading.setValue(true);
-        repository.getTotalIncomeOrExpense(1, month, year, new ReportRepository.ReportCallback<Double>() {
-            @Override
-            public void onSuccess(Double result) {
-                isLoading.postValue(false);
-                if (result != null) {
-                    incomeStateMutableLiveData.postValue(new IncomeState.Success(result));
-                } else {
-                    incomeStateMutableLiveData.postValue(new IncomeState.Success(0.0));
-                }
-            }
-
-            @Override
-            public void onError(String errorMsg) {
-                isLoading.postValue(false);
-                errorMessage.postValue(errorMsg);
-            }
-        });
+        executeDoubleRepositoryCall(
+                callback -> repository.getTotalIncomeOrExpense(2, month, year, callback),
+                result -> incomeState.postValue(new IncomeState.Success(result != null ? result : 0.0)),
+                error -> incomeState.postValue(new IncomeState.Error(error))
+        );
     }
 
     public void getTotalExpense(int month, int year) {
-        isLoading.setValue(true);
-        repository.getTotalIncomeOrExpense(2, month, year, new ReportRepository.ReportCallback<Double>() {
-            @Override
-            public void onSuccess(Double result) {
-                isLoading.postValue(false);
-                if (result!=null) {
-                    expenseStateMutableLiveData.postValue(new ExpenseState.Success(result));
-                } else {
-                    expenseStateMutableLiveData.postValue(new ExpenseState.Success(0.0));
-                }
-            }
-
-            @Override
-            public void onError(String errorMsg) {
-                isLoading.postValue(false);
-                errorMessage.postValue(errorMsg);
-            }
-        });
+        executeDoubleRepositoryCall(
+                callback -> repository.getTotalIncomeOrExpense(1, month, year, callback),
+                result -> expenseState.postValue(new ExpenseState.Success(result != null ? result : 0.0)),
+                error -> expenseState.postValue(new ExpenseState.Error(error))
+        );
     }
 
+    public void loadCombinedFinanceData(int month, int year) {
+        isLoading.setValue(true);
+        getTotalIncome(month, year);
+        getTotalExpense(month, year);
+        loadCategorySummaries();
+    }
+
+    // Getters
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
@@ -99,27 +107,28 @@ public class ReportViewModel extends AndroidViewModel {
         return isLoading;
     }
 
-    public LiveData<Double> getTotalIncome() {
-        return getTotalIncome;
-    }
-
-    public LiveData<Double> getTotalExpense() {
-        return getTotalExpense;
-    }
-
     public LiveData<CategorySummaryState> getReportState() {
         return reportState;
     }
 
     public LiveData<IncomeState> getIncomeState() {
-        return incomeStateMutableLiveData;
+        return incomeState;
     }
 
     public LiveData<ExpenseState> getExpenseState() {
-        return expenseStateMutableLiveData;
+        return expenseState;
     }
 
-    // UI State representation
+    public LiveData<CombinedFinanceState> getCombinedState() {
+        return combinedState;
+    }
+
+    // Repository call interface
+    public interface RepositoryCall<T> {
+        void execute(ReportRepository.ReportCallback<T> callback);
+    }
+
+    // State classes
     public static abstract class CategorySummaryState {
         public static class Loading extends CategorySummaryState {
         }
@@ -206,5 +215,45 @@ public class ReportViewModel extends AndroidViewModel {
             }
         }
     }
-}
 
+    public static abstract class CombinedFinanceState {
+        public static class Success extends CombinedFinanceState {
+            private final double income;
+            private final double expense;
+            private final List<CategorySummary> summaries;
+
+            public Success(double income, double expense, List<CategorySummary> summaries) {
+                this.income = income;
+                this.expense = expense;
+                this.summaries = summaries;
+            }
+
+            public double getIncome() {
+                return income;
+            }
+
+            public double getExpense() {
+                return expense;
+            }
+
+            public List<CategorySummary> getSummaries() {
+                return summaries;
+            }
+        }
+
+        public static class Error extends CombinedFinanceState {
+            private final String message;
+
+            public Error(String message) {
+                this.message = message;
+            }
+
+            public String getMessage() {
+                return message;
+            }
+        }
+
+        public static class Loading extends CombinedFinanceState {
+        }
+    }
+}
