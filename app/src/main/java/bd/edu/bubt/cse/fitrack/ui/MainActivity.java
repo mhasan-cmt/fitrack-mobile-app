@@ -105,8 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // TODO: Implement BudgetFragment
             Toast.makeText(this, "Budget feature coming soon", Toast.LENGTH_SHORT).show();
         } else if (item.getItemId() == R.id.nav_reports) {
-            // TODO: Implement ReportsFragment
-            Toast.makeText(this, "Reports feature coming soon", Toast.LENGTH_SHORT).show();
+            fragment = new ReportFragment();
         } else if (item.getItemId() == R.id.nav_settings) {
             // TODO: Implement SettingsFragment
             Toast.makeText(this, "Settings feature coming soon", Toast.LENGTH_SHORT).show();

@@ -10,8 +10,11 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.List;
 import java.util.function.Consumer;
 
+import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository;
+import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository.ReportCallback;
 
 public class ReportViewModel extends AndroidViewModel {
 
@@ -21,6 +24,8 @@ public class ReportViewModel extends AndroidViewModel {
     private final MutableLiveData<CategorySummaryState> reportState = new MutableLiveData<>();
     private final MutableLiveData<IncomeState> incomeState = new MutableLiveData<>();
     private final MutableLiveData<ExpenseState> expenseState = new MutableLiveData<>();
+    private final MutableLiveData<MonthlySummaryState> monthlySummaryState = new MutableLiveData<>();
+    private final MutableLiveData<CategoryBreakdownState> categoryBreakdownState = new MutableLiveData<>();
     private final MutableLiveData<CombinedFinanceState> combinedState = new MutableLiveData<>();
 
     public ReportViewModel(@NonNull Application application) {
@@ -40,7 +45,7 @@ public class ReportViewModel extends AndroidViewModel {
             Consumer<String> onError
     ) {
         isLoading.setValue(true);
-        call.execute(new ReportRepository.ReportCallback<T>() {
+        call.execute(new ReportCallback<T>() {
             @Override
             public void onSuccess(T result) {
                 isLoading.postValue(false);
@@ -91,10 +96,31 @@ public class ReportViewModel extends AndroidViewModel {
         );
     }
 
+    public void getMonthlySummary(int year) {
+        executeRepositoryCall(
+                (ReportCallback<List<MonthlySummary>> callback) -> repository.getMonthlyIncomeExpenseData(year, callback),
+                result -> monthlySummaryState.postValue(new MonthlySummaryState.Success(result)),
+                error -> monthlySummaryState.postValue(new MonthlySummaryState.Error(error))
+        );
+    }
+
+
+    public void getCategoryBreakdown(int month, int year) {
+        executeRepositoryCall(
+                (ReportCallback<List<CategoryChartSummary>> callback) -> repository.getCategoryBreakdownSummary(month, year, callback),
+                result -> categoryBreakdownState.postValue(new CategoryBreakdownState.Success(result)),
+                error -> categoryBreakdownState.postValue(new CategoryBreakdownState.Error(error))
+        );
+    }
+
+
+
+
     public void loadCombinedFinanceData(int month, int year) {
         isLoading.setValue(true);
         getTotalIncome(month, year);
         getTotalExpense(month, year);
+        getMonthlySummary(year);
         loadCategorySummaries();
     }
 
@@ -119,13 +145,21 @@ public class ReportViewModel extends AndroidViewModel {
         return expenseState;
     }
 
+    public LiveData<MonthlySummaryState> getMonthlySummaryState() {
+        return monthlySummaryState;
+    }
+
+    public LiveData<CategoryBreakdownState> getCategoryBreakdownState() {
+        return categoryBreakdownState;
+    }
+
     public LiveData<CombinedFinanceState> getCombinedState() {
         return combinedState;
     }
 
     // Repository call interface
     public interface RepositoryCall<T> {
-        void execute(ReportRepository.ReportCallback<T> callback);
+        void execute(ReportCallback<T> callback);
     }
 
     // State classes
@@ -213,6 +247,34 @@ public class ReportViewModel extends AndroidViewModel {
             public String getMessage() {
                 return message;
             }
+        }
+    }
+
+    public static abstract class MonthlySummaryState {
+        public static class Success extends MonthlySummaryState {
+            private final List<MonthlySummary> data;
+            public Success(List<MonthlySummary> data) { this.data = data; }
+            public List<MonthlySummary> getData() { return data; }
+        }
+
+        public static class Error extends MonthlySummaryState {
+            private final String message;
+            public Error(String message) { this.message = message; }
+            public String getMessage() { return message; }
+        }
+    }
+
+    public static abstract class CategoryBreakdownState {
+        public static class Success extends CategoryBreakdownState {
+            private final List<CategoryChartSummary> data;
+            public Success(List<CategoryChartSummary> data) { this.data = data; }
+            public List<CategoryChartSummary> getData() { return data; }
+        }
+
+        public static class Error extends CategoryBreakdownState {
+            private final String message;
+            public Error(String message) { this.message = message; }
+            public String getMessage() { return message; }
         }
     }
 
