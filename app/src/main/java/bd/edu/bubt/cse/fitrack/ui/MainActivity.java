@@ -101,9 +101,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragment = new CategoriesFragment();
         } else if (item.getItemId() == R.id.nav_profile) {
             fragment = new ProfileFragment();
-        } else if (item.getItemId() == R.id.nav_budget) {
-            // TODO: Implement BudgetFragment
-            Toast.makeText(this, "Budget feature coming soon", Toast.LENGTH_SHORT).show();
         } else if (item.getItemId() == R.id.nav_reports) {
             fragment = new ReportFragment();
         } else if (item.getItemId() == R.id.nav_settings) {

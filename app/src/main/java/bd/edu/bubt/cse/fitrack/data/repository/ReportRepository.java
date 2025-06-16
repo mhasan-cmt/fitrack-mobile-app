@@ -11,6 +11,7 @@ import bd.edu.bubt.cse.fitrack.data.api.RetrofitClient;
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
 import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.DailySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -91,6 +92,25 @@ public class ReportRepository {
 
             @Override
             public void onFailure(Call<ApiResponseDto<List<CategoryChartSummary>>> call, Throwable t) {
+                callback.onError("Network error: " + t.getMessage());
+            }
+        });
+
+    }
+
+    public void getDailySummary(int month, int year, ReportCallback<List<DailySummary>> callback) {
+        reportApi.getDailySummary(month, year).enqueue(new Callback<ApiResponseDto<List<DailySummary>>>() {
+            @Override
+            public void onResponse(Call<ApiResponseDto<List<DailySummary>>> call, Response<ApiResponseDto<List<DailySummary>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getResponse());
+                } else {
+                    callback.onError("Failed to get category breakdowns: " + (response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseDto<List<DailySummary>>> call, Throwable t) {
                 callback.onError("Network error: " + t.getMessage());
             }
         });

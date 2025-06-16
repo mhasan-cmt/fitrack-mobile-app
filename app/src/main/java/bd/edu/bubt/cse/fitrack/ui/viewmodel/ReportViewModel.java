@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.DailySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository.ReportCallback;
@@ -26,6 +27,7 @@ public class ReportViewModel extends AndroidViewModel {
     private final MutableLiveData<ExpenseState> expenseState = new MutableLiveData<>();
     private final MutableLiveData<MonthlySummaryState> monthlySummaryState = new MutableLiveData<>();
     private final MutableLiveData<CategoryBreakdownState> categoryBreakdownState = new MutableLiveData<>();
+    private final MutableLiveData<DailyBreakdownState> dailyBreakdownState = new MutableLiveData<>();
     private final MutableLiveData<CombinedFinanceState> combinedState = new MutableLiveData<>();
 
     public ReportViewModel(@NonNull Application application) {
@@ -113,6 +115,14 @@ public class ReportViewModel extends AndroidViewModel {
         );
     }
 
+    public void getDailyBreakdown(int month, int year) {
+        executeRepositoryCall(
+                (ReportCallback<List<DailySummary>> callback) -> repository.getDailySummary(month, year, callback),
+                result -> dailyBreakdownState.postValue(new DailyBreakdownState.Success(result)),
+                error -> dailyBreakdownState.postValue(new DailyBreakdownState.Error(error))
+        );
+    }
+
 
 
 
@@ -151,6 +161,10 @@ public class ReportViewModel extends AndroidViewModel {
 
     public LiveData<CategoryBreakdownState> getCategoryBreakdownState() {
         return categoryBreakdownState;
+    }
+
+    public LiveData<DailyBreakdownState> getDailyBreakdownState() {
+        return dailyBreakdownState;
     }
 
     public LiveData<CombinedFinanceState> getCombinedState() {
@@ -272,6 +286,20 @@ public class ReportViewModel extends AndroidViewModel {
         }
 
         public static class Error extends CategoryBreakdownState {
+            private final String message;
+            public Error(String message) { this.message = message; }
+            public String getMessage() { return message; }
+        }
+    }
+
+    public static abstract class DailyBreakdownState {
+        public static class Success extends DailyBreakdownState {
+            private final List<DailySummary> data;
+            public Success(List<DailySummary> data) { this.data = data; }
+            public List<DailySummary> getData() { return data; }
+        }
+
+        public static class Error extends DailyBreakdownState {
             private final String message;
             public Error(String message) { this.message = message; }
             public String getMessage() { return message; }

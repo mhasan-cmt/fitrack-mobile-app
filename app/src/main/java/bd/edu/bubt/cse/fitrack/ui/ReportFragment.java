@@ -44,7 +44,7 @@ public class ReportFragment extends Fragment {
                     switch (position) {
                         case 0: tab.setText("Monthly"); break;
                         case 1: tab.setText("Categories"); break;
-//                        case 2: tab.setText("Daily"); break;
+                        case 2: tab.setText("Daily"); break;
                     }
                 }
         ).attach();

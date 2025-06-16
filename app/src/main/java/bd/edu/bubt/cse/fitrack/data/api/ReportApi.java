@@ -5,6 +5,7 @@ import java.util.List;
 import bd.edu.bubt.cse.fitrack.data.dto.ApiResponseDto;
 import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.DailySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -30,4 +31,9 @@ public interface ReportApi {
     @GET("report/chart/category-breakdown")
     Call<ApiResponseDto<List<CategoryChartSummary>>> getCategoryBreakdown(@Query("month") int month,
                                                                        @Query("year") int year);
+
+    @Headers("Content-Type: application/json")
+    @GET("report/chart/daily-breakdown")
+    Call<ApiResponseDto<List<DailySummary>>> getDailySummary(@Query("month") int month,
+                                                             @Query("year") int year);
 }
