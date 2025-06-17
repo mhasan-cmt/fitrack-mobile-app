@@ -18,14 +18,22 @@
         android:gravity="center"
         android:textColor="@color/colorOnBackground" />
 
-    <EditText
-        android:id="@+id/etEmail"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:background="@drawable/input_field_background" />
+        android:layout_marginTop="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="text"
+            android:textColor="@color/colorOnBackground"
+            android:padding="12dp"
+            android:layout_marginTop="8dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -39,8 +47,8 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:inputType="textPassword"
+            android:textColor="@color/colorOnBackground"
             android:padding="12dp"
-            android:background="@drawable/input_field_background"
             android:layout_marginTop="8dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
