@@ -1,7 +1,9 @@
 package bd.edu.bubt.cse.fitrack.ui.notification;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import androidx.annotation.RequiresPermission;
@@ -44,14 +46,28 @@ public class SpendingNotificationWorker extends Worker {
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private void sendNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "spending_alert_channel")
+        Context context = getApplicationContext();
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "spending_alert_channel")
                 .setSmallIcon(R.drawable.ic_chart)
                 .setContentTitle("Overspending Alert")
                 .setContentText("You’re spending more than you earn today.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
 
-        NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
+        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
         manager.notify(101, builder.build());
     }
 }
