@@ -42,9 +42,18 @@ public class ReportFragment extends Fragment {
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
                     switch (position) {
-                        case 0: tab.setText("Monthly"); break;
-                        case 1: tab.setText("Categories"); break;
-                        case 2: tab.setText("Daily"); break;
+                        case 0:
+                            tab.setText("Daily");
+                            break;
+                        case 1:
+                            tab.setText("Monthly");
+                            break;
+                        case 2:
+                            tab.setText("Yearly");
+                            break;
+                        case 3:
+                            tab.setText("Categories");
+                            break;
                     }
                 }
         ).attach();

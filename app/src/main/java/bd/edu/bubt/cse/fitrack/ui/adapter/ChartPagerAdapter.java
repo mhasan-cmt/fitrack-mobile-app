@@ -8,6 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import bd.edu.bubt.cse.fitrack.ui.CategoryBreakdownFragment;
 import bd.edu.bubt.cse.fitrack.ui.DailyExpenseFragment;
 import bd.edu.bubt.cse.fitrack.ui.MonthlyChartFragment;
+import bd.edu.bubt.cse.fitrack.ui.YearlyChartFragment;
 
 public class ChartPagerAdapter extends FragmentStateAdapter {
     public ChartPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -18,15 +19,21 @@ public class ChartPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
-            case 0: return new MonthlyChartFragment();
-            case 1: return new CategoryBreakdownFragment();
-            case 2: return new DailyExpenseFragment();
-            default: throw new IllegalArgumentException("Invalid position");
+            case 0:
+                return new DailyExpenseFragment();
+            case 1:
+                return new MonthlyChartFragment();
+            case 2:
+                return new YearlyChartFragment();
+            case 3:
+                return new CategoryBreakdownFragment();
+            default:
+                throw new IllegalArgumentException("Invalid position");
         }
     }
 
     @Override
     public int getItemCount() {
-        return 3; // Monthly, Category, Daily
+        return 4; // Monthly, Category, Daily, Yearly
     }
 }

@@ -14,6 +14,7 @@ import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.DailySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.YearlySummary;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository.ReportCallback;
 
@@ -28,6 +29,7 @@ public class ReportViewModel extends AndroidViewModel {
     private final MutableLiveData<MonthlySummaryState> monthlySummaryState = new MutableLiveData<>();
     private final MutableLiveData<CategoryBreakdownState> categoryBreakdownState = new MutableLiveData<>();
     private final MutableLiveData<DailyBreakdownState> dailyBreakdownState = new MutableLiveData<>();
+    private final MutableLiveData<YearlySummaryState> yearlyBreakdownState = new MutableLiveData<>();
     private final MutableLiveData<CombinedFinanceState> combinedState = new MutableLiveData<>();
 
     public ReportViewModel(@NonNull Application application) {
@@ -123,6 +125,14 @@ public class ReportViewModel extends AndroidViewModel {
         );
     }
 
+    public void getYearlyBreakdown(int year) {
+        executeRepositoryCall(
+                (ReportCallback<List<YearlySummary>> callback) -> repository.getYearlySummary(year, callback),
+                result -> yearlyBreakdownState.postValue(new YearlySummaryState.Success(result)),
+                error -> yearlyBreakdownState.postValue(new YearlySummaryState.Error(error))
+        );
+    }
+
 
 
 
@@ -165,6 +175,10 @@ public class ReportViewModel extends AndroidViewModel {
 
     public LiveData<DailyBreakdownState> getDailyBreakdownState() {
         return dailyBreakdownState;
+    }
+
+    public LiveData<YearlySummaryState> getYearlyBreakdownState() {
+        return yearlyBreakdownState;
     }
 
     public LiveData<CombinedFinanceState> getCombinedState() {
@@ -300,6 +314,20 @@ public class ReportViewModel extends AndroidViewModel {
         }
 
         public static class Error extends DailyBreakdownState {
+            private final String message;
+            public Error(String message) { this.message = message; }
+            public String getMessage() { return message; }
+        }
+    }
+
+    public static abstract class YearlySummaryState {
+        public static class Success extends YearlySummaryState {
+            private final List<YearlySummary> data;
+            public Success(List<YearlySummary> data) { this.data = data; }
+            public List<YearlySummary> getData() { return data; }
+        }
+
+        public static class Error extends YearlySummaryState {
             private final String message;
             public Error(String message) { this.message = message; }
             public String getMessage() { return message; }
