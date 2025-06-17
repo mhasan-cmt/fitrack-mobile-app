@@ -30,7 +30,6 @@
             android:hint="Email"
             android:inputType="text"
             android:textColor="@color/colorOnBackground"
-            android:padding="12dp"
             android:layout_marginTop="8dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -48,7 +47,6 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:textColor="@color/colorOnBackground"
-            android:padding="12dp"
             android:layout_marginTop="8dp" />
 
     </com.google.android.material.textfield.TextInputLayout>

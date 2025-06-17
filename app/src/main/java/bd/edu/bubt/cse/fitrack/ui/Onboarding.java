@@ -27,21 +27,32 @@ public class Onboarding extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         viewPager = binding.viewPager;
-
-        String[] titles = {
-                "Welcome to Fitrack!",
-                "Track Your Expenses",
-                "Plan Your Savings"
+        int[] images = {
+                R.drawable.onboarding_1,
+                R.drawable.onboarding_2,
+                R.drawable.onboarding_3
         };
 
-        String[] descriptions = {
-                "Manage your finances effortlessly.",
-                "Keep track of your spending.",
-                "Save for your future goals."
-        };
-
-        onboardingAdapter = new OnboardingAdapter(titles, descriptions);
+        onboardingAdapter = new OnboardingAdapter(images);
         viewPager.setAdapter(onboardingAdapter);
+
+        binding.btnGetStarted.setEnabled(false);
+        binding.btnGetStarted.setAlpha(0.5f);
+
+        // Enable Get Started only when last page is reached
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                if (position == images.length - 1) {
+                    binding.btnGetStarted.setEnabled(true);
+                    binding.btnGetStarted.setAlpha(1f);
+                } else {
+                    binding.btnGetStarted.setEnabled(false);
+                    binding.btnGetStarted.setAlpha(0.5f);
+                }
+            }
+        });
+
 
         new TabLayoutMediator(binding.tabLayout, viewPager,
                 (tab, position) -> {

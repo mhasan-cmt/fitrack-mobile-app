@@ -3,6 +3,7 @@ package bd.edu.bubt.cse.fitrack.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,13 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import bd.edu.bubt.cse.fitrack.R;
 
 public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder> {
+    private final int[] imageResIds;
 
-    private final String[] titles;
-    private final String[] descriptions;
-
-    public OnboardingAdapter(String[] titles, String[] descriptions) {
-        this.titles = titles;
-        this.descriptions = descriptions;
+    public OnboardingAdapter(int[] imageResIds) {
+        this.imageResIds = imageResIds;
     }
 
     @NonNull
@@ -28,24 +26,23 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.On
 
     @Override
     public void onBindViewHolder(@NonNull OnboardingViewHolder holder, int position) {
-        holder.tvOnboardingTitle.setText(titles[position]);
-        holder.tvOnboardingDescription.setText(descriptions[position]);
+        holder.imgOnboarding.setImageResource(imageResIds[position]);
     }
 
     @Override
     public int getItemCount() {
-        return titles.length;
+        return imageResIds.length;
     }
 
     static class OnboardingViewHolder extends RecyclerView.ViewHolder {
-        TextView tvOnboardingTitle;
-        TextView tvOnboardingDescription;
+        ImageView imgOnboarding;
 
         OnboardingViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvOnboardingTitle = itemView.findViewById(R.id.tvOnboardingTitle);
-            tvOnboardingDescription = itemView.findViewById(R.id.tvOnboardingDescription);
+            imgOnboarding = itemView.findViewById(R.id.imgOnboarding);
         }
     }
 }
+
+
 

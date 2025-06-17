@@ -8,11 +8,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.Constraints;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +24,7 @@ import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import java.text.DateFormatSymbols;
@@ -37,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
@@ -52,7 +46,6 @@ public class DashboardFragment extends Fragment {
     private CategorySummaryAdapter adapter;
     private ProgressBar progressBar, progressExpenseRatio;
     private TextView tvError, tvProgressLabel;
-
     private double totalIncome = 0.0, totalExpense = 0.0;
 
     private TextView tvTotalIncome, tvTotalExpense, tvNetSavings;
@@ -72,8 +65,6 @@ public class DashboardFragment extends Fragment {
         setupRecyclerView();
         setupSpinners();
         observeViewModel();
-        scheduleSpendingCheckWorker();
-        testNotificationNow();
         return root;
     }
 
@@ -185,6 +176,8 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+        sendOverspendingNotification();
+
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading != null) {
                 progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
@@ -204,8 +197,6 @@ public class DashboardFragment extends Fragment {
         double netSavings = totalIncome - totalExpense;
         animateTextChange(tvNetSavings, String.format("৳%.2f", netSavings));
         tvNetSavings.setTextColor(netSavings >= 0 ? Color.GREEN : Color.RED);
-
-        // Save to SharedPreferences for background checks
         SharedPreferences prefs = requireContext().getSharedPreferences("finance_prefs", Context.MODE_PRIVATE);
         prefs.edit()
                 .putFloat("latest_income", (float) totalIncome)
@@ -213,28 +204,9 @@ public class DashboardFragment extends Fragment {
                 .apply();
     }
 
-    private void scheduleSpendingCheckWorker() {
-        androidx.work.Constraints constraints = new androidx.work.Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
-                .build();
-
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
-                SpendingNotificationWorker.class,
-                12, TimeUnit.HOURS)
-                .setConstraints(constraints)
-                .build();
-
-        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
-                "spending_check_worker",
-                ExistingPeriodicWorkPolicy.KEEP,
-                workRequest
-        );
-        Log.d("SpendingCheck", "Worker scheduled");
-    }
-
-    private void testNotificationNow() {
-        OneTimeWorkRequest testWork = new OneTimeWorkRequest.Builder(SpendingNotificationWorker.class).build();
-        WorkManager.getInstance(requireContext()).enqueue(testWork);
+    private void sendOverspendingNotification() {
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(SpendingNotificationWorker.class).build();
+        WorkManager.getInstance(requireContext()).enqueue(workRequest);
     }
 
 
