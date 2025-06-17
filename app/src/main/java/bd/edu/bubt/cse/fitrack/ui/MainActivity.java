@@ -1,11 +1,14 @@
 package bd.edu.bubt.cse.fitrack.ui;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createNotificationChannel();
 
         SharedPreferences sharedPreferences = this.getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isOnboardingDone = sharedPreferences.getBoolean("isOnboardingDone", false);
@@ -173,4 +177,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(sessionExpiredReceiver);
     }
+
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "spending_alert_channel",
+                    "Spending Alert",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Alerts you when you overspend");
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+
 }

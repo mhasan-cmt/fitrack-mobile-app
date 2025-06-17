@@ -58,6 +58,7 @@ dependencies {
     implementation libs.room.paging
     implementation libs.viewpager2
     implementation libs.mpandroidchart
+    implementation "androidx.work:work-runtime:2.10.1"
 
     testImplementation libs.room.testing
     compileOnly libs.lombok
