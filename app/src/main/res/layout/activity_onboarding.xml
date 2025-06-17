@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/colorBackground"
     android:padding="24dp">
 
     <androidx.viewpager2.widget.ViewPager2
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/btnGetStarted"
-        app:tabIndicatorColor="@color/primaryColor"
+        app:tabIndicatorColor="@color/colorPrimary"
         android:background="@android:color/transparent"
         app:tabIndicatorHeight="4dp"
         android:layout_marginBottom="10dp"
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:background="@drawable/button_background"
-        android:backgroundTint="@color/primaryColor"
+        android:backgroundTint="@color/colorPrimary"
         android:padding="12dp"
         android:text="Get Started"
         android:textColor="@android:color/white"

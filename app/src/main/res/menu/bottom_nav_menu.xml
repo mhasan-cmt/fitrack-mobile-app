@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="@string/dashboard_menu" />
+
+    <item
+        android:id="@+id/nav_transactions"
+        android:icon="@drawable/ic_currency"
+        android:title="@string/transactions_menu" />
+
+    <item
+        android:id="@+id/nav_categories"
+        android:icon="@drawable/ic_category"
+        android:title="@string/categories_menu" />
+
+    <item
+        android:id="@+id/nav_reports"
+        android:icon="@drawable/ic_chart"
+        android:title="@string/reports_menu" />
+
+</menu>

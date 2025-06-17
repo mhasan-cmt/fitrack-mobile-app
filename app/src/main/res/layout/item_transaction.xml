@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="$0.00"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="@color/colorError"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:text="Title"
             android:textSize="14sp"
-            android:textColor="@android:color/black" />
+            android:textColor="@color/colorOnBackground" />
 
         <!-- Date -->
         <TextView
@@ -52,6 +52,6 @@
             android:layout_height="wrap_content"
             android:text="Date"
             android:textSize="12sp"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@color/colorOnBackground" />
     </LinearLayout>
 </LinearLayout>

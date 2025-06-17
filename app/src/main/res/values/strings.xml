@@ -93,4 +93,10 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="profile_menu">Profile</string>
+    <string name="logout_menu">Logout</string>
+    <string name="dashboard_menu">Dashboard</string>
+    <string name="transactions_menu">Transactions</string>
+    <string name="categories_menu">Categories</string>
+    <string name="reports_menu">Reports</string>
 </resources>

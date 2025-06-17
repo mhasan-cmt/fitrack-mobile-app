@@ -20,7 +20,7 @@
             android:layout_weight="2"
             android:text="Category Name"
             android:textSize="18sp"
-            android:textColor="#212121"
+            android:textColor="@color/colorOnBackground"
             android:textStyle="bold" />
 
         <TextView
@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:text="Type"
             android:textSize="16sp"
-            android:textColor="#666666"
+            android:textColor="@color/colorOnBackground"
             android:gravity="end" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -31,11 +32,11 @@ import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.data.local.TokenManager;
 import bd.edu.bubt.cse.fitrack.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private DrawerLayout drawerLayout;
-    private TextView tvUserEmail;
+    private TextView tvUserEmail; // Optional, if still needed
+    private TokenManager tokenManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,103 +52,77 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
 
-        // Check if user is authenticated using TokenManager
-        TokenManager tokenManager = TokenManager.getInstance(this);
+        tokenManager = TokenManager.getInstance(this);
         if (!tokenManager.hasValidToken()) {
             startActivity(new Intent(MainActivity.this, Login.class));
             finish();
             return;
         }
 
-        // Continue loading main UI
+        // Inflate layout
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
-        findViews();
+        // Setup toolbar
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setTitle("FiTrack");
+
+        // Bottom Navigation setup
+        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+            Fragment fragment;
+            int itemId = item.getItemId();
+            if (itemId == bd.edu.bubt.cse.fitrack.R.id.nav_transactions) {
+                fragment = new TransactionsFragment();
+            } else if (itemId == bd.edu.bubt.cse.fitrack.R.id.nav_categories) {
+                fragment = new CategoriesFragment();
+            } else if (itemId == bd.edu.bubt.cse.fitrack.R.id.nav_reports) {
+                fragment = new ReportFragment();
+            } else {
+                fragment = new DashboardFragment();
+            }
+            loadFragment(fragment);
+            return true;
+        });
 
         if (savedInstanceState == null) {
-            loadFragment(new DashboardFragment());
-        }
-
-        // Get username from TokenManager
-        tokenManager = TokenManager.getInstance(this);
-        String username = tokenManager.getUsername();
-
-        tvUserEmail.setText(username != null ? username : "User");
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-    }
-
-    private void findViews() {
-        drawerLayout = binding.drawerLayout;
-        NavigationView navigationView = binding.navigationView;
-        navigationView.setNavigationItemSelectedListener(this);
-        View headerView = navigationView.getHeaderView(0);
-        tvUserEmail = headerView.findViewById(R.id.user_email);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
-
-        if (item.getItemId() == R.id.nav_dashboard) {
-            fragment = new DashboardFragment();
-        } else if (item.getItemId() == R.id.nav_transactions) {
-            fragment = new TransactionsFragment();
-        } else if (item.getItemId() == R.id.nav_categories) {
-            fragment = new CategoriesFragment();
-        } else if (item.getItemId() == R.id.nav_profile) {
-            fragment = new ProfileFragment();
-        } else if (item.getItemId() == R.id.nav_reports) {
-            fragment = new ReportFragment();
-        } else if (item.getItemId() == R.id.nav_settings) {
-            // TODO: Implement SettingsFragment
-            Toast.makeText(this, "Settings feature coming soon", Toast.LENGTH_SHORT).show();
-        } else if (item.getItemId() == R.id.nav_logout) {
-            logoutUser();
-        }
-
-        if (fragment != null) {
-            loadFragment(fragment);
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void logoutUser() {
-        // Use TokenManager to securely clear all authentication data
-        TokenManager tokenManager = TokenManager.getInstance(this);
-        tokenManager.clearAll();
-
-        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(MainActivity.this, Login.class));
-        finish();
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
         }
     }
 
+    // Load fragment
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();
     }
 
+    // Toolbar menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_profile) {
+            loadFragment(new ProfileFragment());
+            return true;
+        } else if (item.getItemId() == R.id.action_logout) {
+            logoutUser();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logoutUser() {
+        tokenManager.clearAll();
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(MainActivity.this, Login.class));
+        finish();
+    }
+
+    // Session expiration receiver
     private final BroadcastReceiver sessionExpiredReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -178,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LocalBroadcastManager.getInstance(this).unregisterReceiver(sessionExpiredReceiver);
     }
 
-
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
@@ -187,10 +161,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     NotificationManager.IMPORTANCE_HIGH
             );
             channel.setDescription("Alerts you when you overspend");
-
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
     }
-
 }
+
