@@ -52,7 +52,7 @@ public class ReportFragment extends Fragment {
                             tab.setText("Yearly");
                             break;
                         case 3:
-                            tab.setText("Categories");
+                            tab.setText("Category");
                             break;
                     }
                 }

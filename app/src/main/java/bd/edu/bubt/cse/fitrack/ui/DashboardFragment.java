@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,16 +107,18 @@ public class DashboardFragment extends Fragment {
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYear.setAdapter(yearAdapter);
 
-        selectedMonth = Calendar.getInstance().get(Calendar.MONTH); // 0-based
+        // Set initial selections
+        selectedMonth = Calendar.getInstance().get(Calendar.MONTH) + 1; // now 1-based
         selectedYear = currentYear;
-        spinnerMonth.setSelection(selectedMonth);
-        spinnerYear.setSelection(0); // First item is current year
+        spinnerMonth.setSelection(selectedMonth - 1);
+        spinnerYear.setSelection(0); // first item is current year
 
         AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                int newMonth = spinnerMonth.getSelectedItemPosition() + 1;
+                int newMonth = spinnerMonth.getSelectedItemPosition() + 1; // 1-based
                 int newYear = (int) spinnerYear.getSelectedItem();
+
                 if (!isInitialSelection && (newMonth != selectedMonth || newYear != selectedYear)) {
                     selectedMonth = newMonth;
                     selectedYear = newYear;
@@ -132,10 +135,11 @@ public class DashboardFragment extends Fragment {
         spinnerMonth.setOnItemSelectedListener(spinnerListener);
         spinnerYear.setOnItemSelectedListener(spinnerListener);
 
-        fetchData(); // Initial data load
+        fetchData(); // initial data load
     }
 
     private void fetchData() {
+        Log.d("Dashboard", "fetchData() -> Month: " + selectedMonth + ", Year: " + selectedYear);
         viewModel.getTotalIncome(selectedMonth, selectedYear);
         viewModel.getTotalExpense(selectedMonth, selectedYear);
     }
@@ -157,6 +161,7 @@ public class DashboardFragment extends Fragment {
         viewModel.getIncomeState().observe(getViewLifecycleOwner(), incomeState -> {
             if (incomeState instanceof ReportViewModel.IncomeState.Success) {
                 totalIncome = ((ReportViewModel.IncomeState.Success) incomeState).getIncome();
+                Log.d("Dashboard", "Income received: " + totalIncome);
                 animateTextChange(tvTotalIncome, String.format("Earnings: ৳%.2f", totalIncome));
                 updateNetSavings();
                 updateExpensePercentage();
@@ -168,6 +173,7 @@ public class DashboardFragment extends Fragment {
         viewModel.getExpenseState().observe(getViewLifecycleOwner(), expenseState -> {
             if (expenseState instanceof ReportViewModel.ExpenseState.Success) {
                 totalExpense = ((ReportViewModel.ExpenseState.Success) expenseState).getExpense();
+                Log.d("Dashboard", "Expense received: " + totalExpense);
                 animateTextChange(tvTotalExpense, String.format("Spendings: ৳%.2f", totalExpense));
                 updateNetSavings();
                 updateExpensePercentage();
@@ -197,6 +203,7 @@ public class DashboardFragment extends Fragment {
         double netSavings = totalIncome - totalExpense;
         animateTextChange(tvNetSavings, String.format("৳%.2f", netSavings));
         tvNetSavings.setTextColor(netSavings >= 0 ? Color.GREEN : Color.RED);
+
         SharedPreferences prefs = requireContext().getSharedPreferences("finance_prefs", Context.MODE_PRIVATE);
         prefs.edit()
                 .putFloat("latest_income", (float) totalIncome)
@@ -204,17 +211,11 @@ public class DashboardFragment extends Fragment {
                 .apply();
     }
 
-    private void sendOverspendingNotification() {
-        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(SpendingNotificationWorker.class).build();
-        WorkManager.getInstance(requireContext()).enqueue(workRequest);
-    }
-
-
     private void updateExpensePercentage() {
         if (totalIncome > 0) {
             double percent = (totalExpense / totalIncome) * 100;
-
             int progress = (int) Math.min(100, percent);
+
             ObjectAnimator.ofInt(progressExpenseRatio, "progress", progress).setDuration(500).start();
 
             if (percent > 100) {
@@ -225,7 +226,6 @@ public class DashboardFragment extends Fragment {
                 tvProgressLabel.setText(String.format("%.1f%%", percent));
                 tvProgressLabel.setTextColor(Color.BLACK);
             }
-
         } else {
             progressExpenseRatio.setProgress(0);
             tvProgressLabel.setText("0%");
@@ -233,6 +233,10 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+    private void sendOverspendingNotification() {
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(SpendingNotificationWorker.class).build();
+        WorkManager.getInstance(requireContext()).enqueue(workRequest);
+    }
 
     private void animateTextChange(TextView textView, String newText) {
         textView.animate()
@@ -255,6 +259,7 @@ public class DashboardFragment extends Fragment {
         tvError.setVisibility(View.GONE);
     }
 }
+
 
 
 
