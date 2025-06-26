@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.databinding.ActivityLoginBinding;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.LoginViewModel;
 

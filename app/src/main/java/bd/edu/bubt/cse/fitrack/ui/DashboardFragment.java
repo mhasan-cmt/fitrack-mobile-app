@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,15 +38,12 @@ import java.util.List;
 
 import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
-import bd.edu.bubt.cse.fitrack.ui.adapter.CategorySummaryAdapter;
 import bd.edu.bubt.cse.fitrack.ui.notification.SpendingNotificationWorker;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.ReportViewModel;
 
 public class DashboardFragment extends Fragment {
 
     private ReportViewModel viewModel;
-    private RecyclerView rvCategorySummary;
-    private CategorySummaryAdapter adapter;
     private ProgressBar progressBar, progressExpenseRatio;
     private TextView tvError, tvProgressLabel;
     private double totalIncome = 0.0, totalExpense = 0.0;
@@ -63,7 +62,6 @@ public class DashboardFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         viewModel = new ViewModelProvider(this).get(ReportViewModel.class);
         initializeViews(root);
-        setupRecyclerView();
         setupSpinners();
         observeViewModel();
         return root;
@@ -77,16 +75,26 @@ public class DashboardFragment extends Fragment {
         tvNetSavings = root.findViewById(R.id.tv_net_savings);
         progressExpenseRatio = root.findViewById(R.id.progress_expense_ratio);
         tvProgressLabel = root.findViewById(R.id.tv_progress_label);
-
-        rvCategorySummary = root.findViewById(R.id.rv_category_summary);
         spinnerMonth = root.findViewById(R.id.spinner_month);
         spinnerYear = root.findViewById(R.id.spinner_year);
+
+        setupAnimatedToggle(root.findViewById(R.id.tv_toggle_net_savings), root.findViewById(R.id.layout_net_savings_content));
+        setupAnimatedToggle(root.findViewById(R.id.tv_toggle_prediction), root.findViewById(R.id.layout_prediction_content));
+
     }
 
-    private void setupRecyclerView() {
-        rvCategorySummary.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        adapter = new CategorySummaryAdapter(new ArrayList<>());
-        rvCategorySummary.setAdapter(adapter);
+    private void setupAnimatedToggle(TextView toggleTextView, ViewGroup contentLayout) {
+        toggleTextView.setOnClickListener(v -> {
+            boolean isVisible = contentLayout.getVisibility() == View.VISIBLE;
+
+            TransitionManager.beginDelayedTransition((ViewGroup) contentLayout.getParent(),
+                    new AutoTransition());
+
+            contentLayout.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+
+            String current = toggleTextView.getText().toString();
+            toggleTextView.setText(current.replace(isVisible ? "▾" : "▸", isVisible ? "▸" : "▾"));
+        });
     }
 
     private void setupSpinners() {
@@ -145,18 +153,6 @@ public class DashboardFragment extends Fragment {
     }
 
     private void observeViewModel() {
-        viewModel.getReportState().observe(getViewLifecycleOwner(), state -> {
-            if (state instanceof ReportViewModel.CategorySummaryState.Success) {
-                progressBar.setVisibility(View.GONE);
-                tvError.setVisibility(View.GONE);
-                List<CategorySummary> data = ((ReportViewModel.CategorySummaryState.Success) state).getSummaries();
-                adapter.setCategoryList(data != null ? data : new ArrayList<>());
-            } else if (state instanceof ReportViewModel.CategorySummaryState.Error) {
-                showError("Failed to load category summaries");
-            } else {
-                showLoading();
-            }
-        });
 
         viewModel.getIncomeState().observe(getViewLifecycleOwner(), incomeState -> {
             if (incomeState instanceof ReportViewModel.IncomeState.Success) {
