@@ -13,6 +13,8 @@ import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.DailySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.PredictionSummary;
+import bd.edu.bubt.cse.fitrack.data.dto.TransactionsCountSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.YearlySummary;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,7 +121,7 @@ public class ReportRepository {
     }
 
     public void getYearlySummary(int year, ReportCallback<List<YearlySummary>> callback) {
-        reportApi.getYearlySummary( year).enqueue(new Callback<>() {
+        reportApi.getYearlySummary(year).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponseDto<List<YearlySummary>>> call, @NonNull Response<ApiResponseDto<List<YearlySummary>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -131,6 +133,42 @@ public class ReportRepository {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponseDto<List<YearlySummary>>> call, @NonNull Throwable t) {
+                callback.onError("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getTransactionsCountSummary(int month, int year, ReportCallback<TransactionsCountSummary> callback) {
+        reportApi.getTransactionsCountSummary(month, year).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponseDto<TransactionsCountSummary>> call, @NonNull Response<ApiResponseDto<TransactionsCountSummary>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getResponse());
+                } else {
+                    callback.onError("Failed to get transactions counts summary : " + (response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponseDto<TransactionsCountSummary>> call, @NonNull Throwable t) {
+                callback.onError("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getPredictionSummary(int type, ReportCallback<PredictionSummary> callback) {
+        reportApi.getPredictionForNextMonth(type).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponseDto<PredictionSummary>> call, @NonNull Response<ApiResponseDto<PredictionSummary>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getResponse());
+                } else {
+                    callback.onError("Failed to get prediction summary : " + (response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponseDto<PredictionSummary>> call, @NonNull Throwable t) {
                 callback.onError("Network error: " + t.getMessage());
             }
         });

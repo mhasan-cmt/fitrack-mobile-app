@@ -36,6 +36,116 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
+        <!-- Transaction Count Row with Icons & Progress -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- Expense Count Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_expense_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                app:strokeColor="@android:color/holo_red_dark"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Expense Icon"
+                        android:src="@drawable/ic_expense"/>
+
+                    <TextView
+                        android:id="@+id/tv_expense_count_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Expense Txns"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_expense_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="0"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Income Count Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_income_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                app:strokeColor="@android:color/holo_green_dark"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Income Icon"
+                        android:src="@drawable/ic_income" />
+
+                    <TextView
+                        android:id="@+id/tv_income_count_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Income Txns"
+                        android:textColor="@android:color/holo_green_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_income_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="0"
+                        android:textColor="@android:color/holo_green_dark"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+
         <!-- Income Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -183,7 +293,7 @@
                     android:id="@+id/tv_toggle_prediction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Next Month Prediction ▾"
+                    android:text="@string/next_month_prediction"
                     android:textColor="@android:color/holo_blue_dark"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -193,14 +303,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_prediction_amount"
+                        android:id="@+id/tv_prediction_income_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Next Month Income Prediction: ৳0.00"
-                        android:textColor="@android:color/holo_blue_dark"
+                        android:text="@string/next_month_income_prediction_0_00"
+                        android:textColor="@color/colorPrimaryVariant"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_prediction_expense_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/next_month_expense_prediction_0_00"
+                        android:textColor="@color/colorError"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -209,7 +330,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Data available for 0 month(s)"
+                        android:text="@string/data_available_for_0_month_s"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="14sp" />
 
@@ -218,7 +339,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Not enough data to make a prediction. At least 3 months of data is required."
+                        android:text="@string/not_enough_data_to_make_a_prediction_at_least_3_months_of_data_is_required"
                         android:textColor="@android:color/holo_red_dark"
                         android:textSize="14sp"
                         android:visibility="gone" />

@@ -12,8 +12,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "https://fitrack-4zpt.onrender.com/mywallet/";
-//    private static final String BASE_URL = "http://172.20.208.1:8080/mywallet/";
+//    private static final String BASE_URL = "https://fitrack-4zpt.onrender.com/mywallet/";
+    private static final String BASE_URL = "http://172.20.208.1:8080/mywallet/";
     private static final int CONNECT_TIMEOUT = 15;
     private static final int READ_TIMEOUT = 30;
     private static final int WRITE_TIMEOUT = 30;

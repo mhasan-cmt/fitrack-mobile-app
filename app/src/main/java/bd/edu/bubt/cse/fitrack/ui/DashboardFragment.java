@@ -1,6 +1,7 @@
 package bd.edu.bubt.cse.fitrack.ui;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -25,8 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -37,7 +36,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import bd.edu.bubt.cse.fitrack.R;
-import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
 import bd.edu.bubt.cse.fitrack.ui.notification.SpendingNotificationWorker;
 import bd.edu.bubt.cse.fitrack.ui.viewmodel.ReportViewModel;
 
@@ -48,7 +46,7 @@ public class DashboardFragment extends Fragment {
     private TextView tvError, tvProgressLabel;
     private double totalIncome = 0.0, totalExpense = 0.0;
 
-    private TextView tvTotalIncome, tvTotalExpense, tvNetSavings;
+    private TextView tvTotalIncome, tvTotalExpense, tvNetSavings, tv_expense_count, tv_income_count;
     private Spinner spinnerMonth, spinnerYear;
 
     private int selectedMonth, selectedYear;
@@ -72,6 +70,8 @@ public class DashboardFragment extends Fragment {
         tvError = root.findViewById(R.id.tv_error_message);
         tvTotalIncome = root.findViewById(R.id.tv_total_income);
         tvTotalExpense = root.findViewById(R.id.tv_total_expense);
+        tv_expense_count = root.findViewById(R.id.tv_expense_count);
+        tv_income_count = root.findViewById(R.id.tv_income_count);
         tvNetSavings = root.findViewById(R.id.tv_net_savings);
         progressExpenseRatio = root.findViewById(R.id.progress_expense_ratio);
         tvProgressLabel = root.findViewById(R.id.tv_progress_label);
@@ -150,8 +150,10 @@ public class DashboardFragment extends Fragment {
         Log.d("Dashboard", "fetchData() -> Month: " + selectedMonth + ", Year: " + selectedYear);
         viewModel.getTotalIncome(selectedMonth, selectedYear);
         viewModel.getTotalExpense(selectedMonth, selectedYear);
+        viewModel.getTransactionCountSummary(selectedMonth, selectedYear);
     }
 
+    @SuppressLint("SetTextI18n")
     private void observeViewModel() {
 
         viewModel.getIncomeState().observe(getViewLifecycleOwner(), incomeState -> {
@@ -163,6 +165,17 @@ public class DashboardFragment extends Fragment {
                 updateExpensePercentage();
             } else if (incomeState instanceof ReportViewModel.IncomeState.Error) {
                 showError("Failed to load income");
+            }
+        });
+
+        viewModel.getTransactionCountSummaryState().observe(getViewLifecycleOwner(), summaryState -> {
+            if (summaryState instanceof ReportViewModel.TransactionsCountState.Success) {
+                tv_income_count.setText("" + ((ReportViewModel.TransactionsCountState.Success) summaryState).getData().getIncome());
+                tv_expense_count.setText("" + ((ReportViewModel.TransactionsCountState.Success) summaryState).getData().getExpense());
+                Log.d("Dashboard", "Transaction count summaries received");
+            } else if (summaryState instanceof ReportViewModel.TransactionsCountState.Error) {
+                Log.e("Dashboard", "Failed to load transaction count summaries");
+                showError("Failed to load transaction summaries");
             }
         });
 

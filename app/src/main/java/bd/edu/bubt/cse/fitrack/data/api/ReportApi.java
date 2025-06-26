@@ -7,6 +7,8 @@ import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.DailySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.PredictionSummary;
+import bd.edu.bubt.cse.fitrack.data.dto.TransactionsCountSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.YearlySummary;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -31,7 +33,7 @@ public interface ReportApi {
     @Headers("Content-Type: application/json")
     @GET("report/chart/category-breakdown")
     Call<ApiResponseDto<List<CategoryChartSummary>>> getCategoryBreakdown(@Query("month") int month,
-                                                                       @Query("year") int year);
+                                                                          @Query("year") int year);
 
     @Headers("Content-Type: application/json")
     @GET("report/chart/daily-breakdown")
@@ -41,4 +43,14 @@ public interface ReportApi {
     @Headers("Content-Type: application/json")
     @GET("report/chart/yearly-breakdown")
     Call<ApiResponseDto<List<YearlySummary>>> getYearlySummary(@Query("year") int year);
+
+    @Headers("Content-Type: application/json")
+    @GET("report/getTotalNoOfTransactions")
+    Call<ApiResponseDto<TransactionsCountSummary>> getTransactionsCountSummary(@Query("month") int month, @Query("year") int year);
+
+
+    @Headers("Content-Type: application/json")
+    @GET("api/prediction/next-month")
+    Call<ApiResponseDto<PredictionSummary>> getPredictionForNextMonth(@Query("type") int type);
+
 }

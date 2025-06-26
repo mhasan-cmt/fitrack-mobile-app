@@ -14,9 +14,11 @@ import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.DailySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.TransactionsCountSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.YearlySummary;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository.ReportCallback;
+import lombok.Getter;
 
 public class ReportViewModel extends AndroidViewModel {
 
@@ -30,6 +32,7 @@ public class ReportViewModel extends AndroidViewModel {
     private final MutableLiveData<CategoryBreakdownState> categoryBreakdownState = new MutableLiveData<>();
     private final MutableLiveData<DailyBreakdownState> dailyBreakdownState = new MutableLiveData<>();
     private final MutableLiveData<YearlySummaryState> yearlyBreakdownState = new MutableLiveData<>();
+    private final MutableLiveData<TransactionsCountState> transactionCountSummaryState = new MutableLiveData<>();
     private final MutableLiveData<CombinedFinanceState> combinedState = new MutableLiveData<>();
 
     public ReportViewModel(@NonNull Application application) {
@@ -133,7 +136,13 @@ public class ReportViewModel extends AndroidViewModel {
         );
     }
 
-
+    public void getTransactionCountSummary(int month, int year) {
+        executeRepositoryCall(
+                (ReportCallback<TransactionsCountSummary> callback) -> repository.getTransactionsCountSummary(month, year, callback),
+                result -> transactionCountSummaryState.postValue(new TransactionsCountState.Success(result)),
+                error -> transactionCountSummaryState.postValue(new TransactionsCountState.Error(error))
+        );
+    }
 
 
     public void loadCombinedFinanceData(int month, int year) {
@@ -181,6 +190,10 @@ public class ReportViewModel extends AndroidViewModel {
         return yearlyBreakdownState;
     }
 
+    public LiveData<TransactionsCountState> getTransactionCountSummaryState() {
+        return transactionCountSummaryState;
+    }
+
     public LiveData<CombinedFinanceState> getCombinedState() {
         return combinedState;
     }
@@ -195,6 +208,7 @@ public class ReportViewModel extends AndroidViewModel {
         public static class Loading extends CategorySummaryState {
         }
 
+        @Getter
         public static class Success extends CategorySummaryState {
             private final List<CategorySummary> summaries;
 
@@ -202,11 +216,9 @@ public class ReportViewModel extends AndroidViewModel {
                 this.summaries = summaries;
             }
 
-            public List<CategorySummary> getSummaries() {
-                return summaries;
-            }
         }
 
+        @Getter
         public static class Error extends CategorySummaryState {
             private final String message;
 
@@ -214,9 +226,6 @@ public class ReportViewModel extends AndroidViewModel {
                 this.message = message;
             }
 
-            public String getMessage() {
-                return message;
-            }
         }
     }
 
@@ -224,6 +233,7 @@ public class ReportViewModel extends AndroidViewModel {
         public static class Loading extends IncomeState {
         }
 
+        @Getter
         public static class Success extends IncomeState {
             private final double income;
 
@@ -231,11 +241,9 @@ public class ReportViewModel extends AndroidViewModel {
                 this.income = income;
             }
 
-            public double getIncome() {
-                return income;
-            }
         }
 
+        @Getter
         public static class Error extends IncomeState {
             private final String message;
 
@@ -243,9 +251,6 @@ public class ReportViewModel extends AndroidViewModel {
                 this.message = message;
             }
 
-            public String getMessage() {
-                return message;
-            }
         }
     }
 
@@ -253,6 +258,7 @@ public class ReportViewModel extends AndroidViewModel {
         public static class Loading extends ExpenseState {
         }
 
+        @Getter
         public static class Success extends ExpenseState {
             private final double expense;
 
@@ -260,11 +266,9 @@ public class ReportViewModel extends AndroidViewModel {
                 this.expense = expense;
             }
 
-            public double getExpense() {
-                return expense;
-            }
         }
 
+        @Getter
         public static class Error extends ExpenseState {
             private final String message;
 
@@ -272,69 +276,111 @@ public class ReportViewModel extends AndroidViewModel {
                 this.message = message;
             }
 
-            public String getMessage() {
-                return message;
-            }
         }
     }
 
     public static abstract class MonthlySummaryState {
+        @Getter
         public static class Success extends MonthlySummaryState {
             private final List<MonthlySummary> data;
-            public Success(List<MonthlySummary> data) { this.data = data; }
-            public List<MonthlySummary> getData() { return data; }
+
+            public Success(List<MonthlySummary> data) {
+                this.data = data;
+            }
         }
 
+        @Getter
         public static class Error extends MonthlySummaryState {
             private final String message;
-            public Error(String message) { this.message = message; }
-            public String getMessage() { return message; }
+
+            public Error(String message) {
+                this.message = message;
+            }
         }
     }
 
     public static abstract class CategoryBreakdownState {
+        @Getter
         public static class Success extends CategoryBreakdownState {
             private final List<CategoryChartSummary> data;
-            public Success(List<CategoryChartSummary> data) { this.data = data; }
-            public List<CategoryChartSummary> getData() { return data; }
+
+            public Success(List<CategoryChartSummary> data) {
+                this.data = data;
+            }
         }
 
+        @Getter
         public static class Error extends CategoryBreakdownState {
             private final String message;
-            public Error(String message) { this.message = message; }
-            public String getMessage() { return message; }
+
+            public Error(String message) {
+                this.message = message;
+            }
         }
     }
 
     public static abstract class DailyBreakdownState {
+        @Getter
         public static class Success extends DailyBreakdownState {
             private final List<DailySummary> data;
-            public Success(List<DailySummary> data) { this.data = data; }
-            public List<DailySummary> getData() { return data; }
+
+            public Success(List<DailySummary> data) {
+                this.data = data;
+            }
         }
 
+        @Getter
         public static class Error extends DailyBreakdownState {
             private final String message;
-            public Error(String message) { this.message = message; }
-            public String getMessage() { return message; }
+
+            public Error(String message) {
+                this.message = message;
+            }
         }
     }
 
     public static abstract class YearlySummaryState {
+        @Getter
         public static class Success extends YearlySummaryState {
             private final List<YearlySummary> data;
-            public Success(List<YearlySummary> data) { this.data = data; }
-            public List<YearlySummary> getData() { return data; }
+
+            public Success(List<YearlySummary> data) {
+                this.data = data;
+            }
         }
 
+        @Getter
         public static class Error extends YearlySummaryState {
             private final String message;
-            public Error(String message) { this.message = message; }
-            public String getMessage() { return message; }
+
+            public Error(String message) {
+                this.message = message;
+            }
+        }
+    }
+
+    public static abstract class TransactionsCountState {
+        @Getter
+        public static class Success extends TransactionsCountState {
+            private final TransactionsCountSummary data;
+
+            public Success(TransactionsCountSummary data) {
+                this.data = data;
+            }
+        }
+
+        @Getter
+        public static class Error extends TransactionsCountState {
+            private final String message;
+
+            public Error(String message) {
+                this.message = message;
+            }
         }
     }
 
     public static abstract class CombinedFinanceState {
+        @Getter
         public static class Success extends CombinedFinanceState {
             private final double income;
             private final double expense;
@@ -346,19 +392,9 @@ public class ReportViewModel extends AndroidViewModel {
                 this.summaries = summaries;
             }
 
-            public double getIncome() {
-                return income;
-            }
-
-            public double getExpense() {
-                return expense;
-            }
-
-            public List<CategorySummary> getSummaries() {
-                return summaries;
-            }
         }
 
+        @Getter
         public static class Error extends CombinedFinanceState {
             private final String message;
 
@@ -366,9 +402,6 @@ public class ReportViewModel extends AndroidViewModel {
                 this.message = message;
             }
 
-            public String getMessage() {
-                return message;
-            }
         }
 
         public static class Loading extends CombinedFinanceState {
