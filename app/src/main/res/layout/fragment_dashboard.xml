@@ -70,7 +70,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:contentDescription="Expense Icon"
-                        android:src="@drawable/ic_expense"/>
+                        android:src="@drawable/ic_expense" />
 
                     <TextView
                         android:id="@+id/tv_expense_count_label"
@@ -303,8 +303,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_prediction_income_amount"
@@ -324,15 +324,6 @@
                         android:textColor="@color/colorError"
                         android:textSize="16sp"
                         android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_prediction_data_count"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="@string/data_available_for_0_month_s"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_prediction_message"

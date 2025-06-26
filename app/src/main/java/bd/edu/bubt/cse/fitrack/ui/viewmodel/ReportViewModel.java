@@ -14,6 +14,7 @@ import bd.edu.bubt.cse.fitrack.data.dto.CategoryChartSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.CategorySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.DailySummary;
 import bd.edu.bubt.cse.fitrack.data.dto.MonthlySummary;
+import bd.edu.bubt.cse.fitrack.data.dto.PredictionSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.TransactionsCountSummary;
 import bd.edu.bubt.cse.fitrack.data.dto.YearlySummary;
 import bd.edu.bubt.cse.fitrack.data.repository.ReportRepository;
@@ -33,6 +34,8 @@ public class ReportViewModel extends AndroidViewModel {
     private final MutableLiveData<DailyBreakdownState> dailyBreakdownState = new MutableLiveData<>();
     private final MutableLiveData<YearlySummaryState> yearlyBreakdownState = new MutableLiveData<>();
     private final MutableLiveData<TransactionsCountState> transactionCountSummaryState = new MutableLiveData<>();
+    private final MutableLiveData<IncomePredictionSummaryState> incomePredictionSummaryState = new MutableLiveData<>();
+    private final MutableLiveData<ExpensePredictionSummaryState> expensePredictionSummaryState = new MutableLiveData<>();
     private final MutableLiveData<CombinedFinanceState> combinedState = new MutableLiveData<>();
 
     public ReportViewModel(@NonNull Application application) {
@@ -144,6 +147,22 @@ public class ReportViewModel extends AndroidViewModel {
         );
     }
 
+    public void getIncomePredictionSummary() {
+        executeRepositoryCall(
+                (ReportCallback<PredictionSummary> callback) -> repository.getPredictionSummary(2, callback),
+                result -> incomePredictionSummaryState.postValue(new IncomePredictionSummaryState.Success(result)),
+                error -> incomePredictionSummaryState.postValue(new IncomePredictionSummaryState.Error(error))
+        );
+    }
+
+    public void getExpensePredictionSummary() {
+        executeRepositoryCall(
+                (ReportCallback<PredictionSummary> callback) -> repository.getPredictionSummary(1, callback),
+                result -> expensePredictionSummaryState.postValue(new ExpensePredictionSummaryState.Success(result)),
+                error -> expensePredictionSummaryState.postValue(new ExpensePredictionSummaryState.Error(error))
+        );
+    }
+
 
     public void loadCombinedFinanceData(int month, int year) {
         isLoading.setValue(true);
@@ -194,16 +213,22 @@ public class ReportViewModel extends AndroidViewModel {
         return transactionCountSummaryState;
     }
 
+    public LiveData<IncomePredictionSummaryState> getIncomePredictionSummaryState() {
+        return incomePredictionSummaryState;
+    }
+
+    public LiveData<ExpensePredictionSummaryState> getExpensePredictionSummaryState() {
+        return expensePredictionSummaryState;
+    }
+
     public LiveData<CombinedFinanceState> getCombinedState() {
         return combinedState;
     }
 
-    // Repository call interface
     public interface RepositoryCall<T> {
         void execute(ReportCallback<T> callback);
     }
 
-    // State classes
     public static abstract class CategorySummaryState {
         public static class Loading extends CategorySummaryState {
         }
@@ -371,6 +396,46 @@ public class ReportViewModel extends AndroidViewModel {
 
         @Getter
         public static class Error extends TransactionsCountState {
+            private final String message;
+
+            public Error(String message) {
+                this.message = message;
+            }
+        }
+    }
+
+    public static abstract class IncomePredictionSummaryState {
+        @Getter
+        public static class Success extends IncomePredictionSummaryState {
+            private final PredictionSummary data;
+
+            public Success(PredictionSummary data) {
+                this.data = data;
+            }
+        }
+
+        @Getter
+        public static class Error extends IncomePredictionSummaryState {
+            private final String message;
+
+            public Error(String message) {
+                this.message = message;
+            }
+        }
+    }
+
+    public static abstract class ExpensePredictionSummaryState {
+        @Getter
+        public static class Success extends ExpensePredictionSummaryState {
+            private final PredictionSummary data;
+
+            public Success(PredictionSummary data) {
+                this.data = data;
+            }
+        }
+
+        @Getter
+        public static class Error extends ExpensePredictionSummaryState {
             private final String message;
 
             public Error(String message) {

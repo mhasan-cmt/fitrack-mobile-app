@@ -1,5 +1,8 @@
 package bd.edu.bubt.cse.fitrack.ui;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -46,7 +49,7 @@ public class DashboardFragment extends Fragment {
     private TextView tvError, tvProgressLabel;
     private double totalIncome = 0.0, totalExpense = 0.0;
 
-    private TextView tvTotalIncome, tvTotalExpense, tvNetSavings, tv_expense_count, tv_income_count;
+    private TextView tvTotalIncome, tvTotalExpense, tvNetSavings, tv_expense_count, tv_income_count, tv_prediction_message, tv_prediction_expense_amount, tv_prediction_income_amount;
     private Spinner spinnerMonth, spinnerYear;
 
     private int selectedMonth, selectedYear;
@@ -77,6 +80,9 @@ public class DashboardFragment extends Fragment {
         tvProgressLabel = root.findViewById(R.id.tv_progress_label);
         spinnerMonth = root.findViewById(R.id.spinner_month);
         spinnerYear = root.findViewById(R.id.spinner_year);
+        tv_prediction_message = root.findViewById(R.id.tv_prediction_message);
+        tv_prediction_expense_amount = root.findViewById(R.id.tv_prediction_expense_amount);
+        tv_prediction_income_amount = root.findViewById(R.id.tv_prediction_income_amount);
 
         setupAnimatedToggle(root.findViewById(R.id.tv_toggle_net_savings), root.findViewById(R.id.layout_net_savings_content));
         setupAnimatedToggle(root.findViewById(R.id.tv_toggle_prediction), root.findViewById(R.id.layout_prediction_content));
@@ -85,12 +91,12 @@ public class DashboardFragment extends Fragment {
 
     private void setupAnimatedToggle(TextView toggleTextView, ViewGroup contentLayout) {
         toggleTextView.setOnClickListener(v -> {
-            boolean isVisible = contentLayout.getVisibility() == View.VISIBLE;
+            boolean isVisible = contentLayout.getVisibility() == VISIBLE;
 
             TransitionManager.beginDelayedTransition((ViewGroup) contentLayout.getParent(),
                     new AutoTransition());
 
-            contentLayout.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+            contentLayout.setVisibility(isVisible ? GONE : VISIBLE);
 
             String current = toggleTextView.getText().toString();
             toggleTextView.setText(current.replace(isVisible ? "▾" : "▸", isVisible ? "▸" : "▾"));
@@ -151,10 +157,34 @@ public class DashboardFragment extends Fragment {
         viewModel.getTotalIncome(selectedMonth, selectedYear);
         viewModel.getTotalExpense(selectedMonth, selectedYear);
         viewModel.getTransactionCountSummary(selectedMonth, selectedYear);
+        viewModel.getIncomePredictionSummary();
+        viewModel.getExpensePredictionSummary();
     }
 
     @SuppressLint("SetTextI18n")
     private void observeViewModel() {
+
+        viewModel.getIncomePredictionSummaryState().observe(getViewLifecycleOwner(), incomePrediction -> {
+            if (incomePrediction instanceof ReportViewModel.IncomePredictionSummaryState.Success) {
+                tv_prediction_expense_amount.setText("Income: ৳" + ((ReportViewModel.IncomePredictionSummaryState.Success) incomePrediction).getData().getPredictedAmount());
+            } else if (incomePrediction instanceof ReportViewModel.IncomePredictionSummaryState.Error) {
+                Log.e("Dashboard", "Failed to load income prediction summary");
+                tv_prediction_message.setVisibility(VISIBLE);
+                tv_prediction_expense_amount.setVisibility(GONE);
+                tv_prediction_income_amount.setVisibility(GONE);
+            }
+        });
+
+        viewModel.getExpensePredictionSummaryState().observe(getViewLifecycleOwner(), expensePrediction -> {
+            if (expensePrediction instanceof ReportViewModel.ExpensePredictionSummaryState.Success) {
+                tv_prediction_expense_amount.setText("Expense: ৳" + ((ReportViewModel.ExpensePredictionSummaryState.Success) expensePrediction).getData().getPredictedAmount());
+            } else if (expensePrediction instanceof ReportViewModel.ExpensePredictionSummaryState.Error) {
+                Log.e("Dashboard", "Failed to load expense prediction summary");
+                tv_prediction_message.setVisibility(VISIBLE);
+                tv_prediction_expense_amount.setVisibility(GONE);
+                tv_prediction_income_amount.setVisibility(GONE);
+            }
+        });
 
         viewModel.getIncomeState().observe(getViewLifecycleOwner(), incomeState -> {
             if (incomeState instanceof ReportViewModel.IncomeState.Success) {
@@ -195,7 +225,7 @@ public class DashboardFragment extends Fragment {
 
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading != null) {
-                progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(isLoading ? VISIBLE : GONE);
             }
         });
 
@@ -203,7 +233,7 @@ public class DashboardFragment extends Fragment {
             if (!TextUtils.isEmpty(error)) {
                 showError(error);
             } else {
-                tvError.setVisibility(View.GONE);
+                tvError.setVisibility(GONE);
             }
         });
     }
@@ -211,7 +241,9 @@ public class DashboardFragment extends Fragment {
     private void updateNetSavings() {
         double netSavings = totalIncome - totalExpense;
         animateTextChange(tvNetSavings, String.format("৳%.2f", netSavings));
-        tvNetSavings.setTextColor(netSavings >= 0 ? Color.GREEN : Color.RED);
+tvNetSavings.setTextColor(netSavings >= 0
+        ? getResources().getColor(R.color.colorPrimaryVariant, requireContext().getTheme())
+        : getResources().getColor(R.color.colorError, requireContext().getTheme()));
 
         SharedPreferences prefs = requireContext().getSharedPreferences("finance_prefs", Context.MODE_PRIVATE);
         prefs.edit()
@@ -258,14 +290,14 @@ public class DashboardFragment extends Fragment {
     }
 
     private void showError(String message) {
-        progressBar.setVisibility(View.GONE);
-        tvError.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(GONE);
+        tvError.setVisibility(VISIBLE);
         tvError.setText(message);
     }
 
     private void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
-        tvError.setVisibility(View.GONE);
+        progressBar.setVisibility(VISIBLE);
+        tvError.setVisibility(GONE);
     }
 }
 
