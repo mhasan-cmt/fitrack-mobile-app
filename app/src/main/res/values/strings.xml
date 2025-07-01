@@ -105,4 +105,6 @@
     <string name="data_available_for_0_month_s">Data available for 0 month(s)</string>
     <string name="not_enough_data_to_make_a_prediction_at_least_3_months_of_data_is_required">Not enough data to make a prediction. At least 3 months of data is required.</string>
     <string name="next_month_prediction">Next Month Prediction ▸</string>
+    <string name="open">Open\n</string>
+    <string name="close">Close\n</string>
 </resources>

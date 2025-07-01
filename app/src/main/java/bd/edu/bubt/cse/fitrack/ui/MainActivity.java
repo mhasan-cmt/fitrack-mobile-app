@@ -13,14 +13,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.material.navigation.NavigationView;
 
 import bd.edu.bubt.cse.fitrack.R;
 import bd.edu.bubt.cse.fitrack.data.local.TokenManager;
@@ -29,13 +31,15 @@ import bd.edu.bubt.cse.fitrack.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private TextView tvUserEmail; // Optional, if still needed
     private TokenManager tokenManager;
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         SharedPreferences sharedPreferences = this.getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isOnboardingDone = sharedPreferences.getBoolean("isOnboardingDone", false);
@@ -61,15 +65,34 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setTitle("FiTrack");
 
+        // Setup Drawer
+        drawerLayout = binding.drawerLayout;
+        navigationView = binding.navigationView;
+
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, binding.toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_profile) {
+                loadFragment(new ProfileFragment());
+            } else if (id == R.id.nav_logout) {
+                logoutUser();
+            }
+            drawerLayout.closeDrawers();
+            return true;
+        });
+
         // Bottom Navigation setup
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             Fragment fragment;
             int itemId = item.getItemId();
-            if (itemId == bd.edu.bubt.cse.fitrack.R.id.nav_transactions) {
+            if (itemId == R.id.nav_transactions) {
                 fragment = new TransactionsFragment();
-            } else if (itemId == bd.edu.bubt.cse.fitrack.R.id.nav_categories) {
+            } else if (itemId == R.id.nav_categories) {
                 fragment = new CategoriesFragment();
-            } else if (itemId == bd.edu.bubt.cse.fitrack.R.id.nav_reports) {
+            } else if (itemId == R.id.nav_reports) {
                 fragment = new ReportFragment();
             } else {
                 fragment = new DashboardFragment();
@@ -95,17 +118,12 @@ public class MainActivity extends AppCompatActivity {
     // Toolbar menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_profile) {
-            loadFragment(new ProfileFragment());
-            return true;
-        } else if (item.getItemId() == R.id.action_logout) {
-            logoutUser();
+        if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -175,4 +193,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
